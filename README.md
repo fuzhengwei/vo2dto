@@ -25,4 +25,4 @@
 
 | 使用演示  |
 |---|
-|  ![](https://github.com/fuzhengwei/guide-idea-plugin/blob/main/vo2dto.png)  |
+|  ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/vo2dto.png)  |
