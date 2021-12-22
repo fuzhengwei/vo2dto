@@ -60,7 +60,7 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         if (isUsedLombok(psiClass)) {
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
-                String name = psiField.getName();
+                String name = psiField.getNameIdentifier().getText();
                 methodList.add(typeStr + name.substring(0, 1).toUpperCase() + name.substring(1));
             }
 
