@@ -1,5 +1,9 @@
 # IDEA Plugin vo2dto | 快速生成`x.set(y.get)`转换对象的插件
 
+安装包下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.2.2](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.2.2)
+
+---
+
 选定对象批量织入“x.set(y.get)”代码，帮助开发者自动生成vo2dto转换代码。视频：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a><br>
 <ul>
     <li>使用方法：先复制对象后，例如：A a，再光标放到需要织入的对象上，例如：B b 选择 Generate -> vo2dto</li>
