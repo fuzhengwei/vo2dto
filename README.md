@@ -1,4 +1,4 @@
-# IDEA Plugin vo2dto | 快速生成`x.set(y.get)`转换对象的插件
+# IDEA Plugin vo2dto | 快速生成`x.set(y.get)`转换对象
 
 安装包下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.2.2](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.2.2)
 
@@ -34,4 +34,4 @@
 
 | 使用演示  |
 |---|
-|  ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/vo2dto.png)  |
+|  ![](/docs/_media/vo2dto.png)  |
