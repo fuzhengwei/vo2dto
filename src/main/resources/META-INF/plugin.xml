@@ -4,30 +4,30 @@
     <vendor email="184172133@qq.com" url="https://bugstack.cn">小傅哥</vendor>
 
     <description><![CDATA[
-      选定对象批量织入“x.set(y.get)”代码，帮助开发者自动生成vo2dto转换代码。视频：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a><br>
+      Batch weave "x.set (y.get)" code into the selected objects to help developers automatically generate vo2dto conversion code. video：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a><br>
       <ul>
-          <li>使用方法：先复制对象后，例如：A a，再光标放到需要织入的对象上，例如：B b 选择 Generate -> vo2dto</li>
-          <li>使用场景：对于一些不适合使用 MapStruct 编写映射类的又不希望大量手写转换代码的场景</li>
-          <li>使用提醒：通过检测 @DATA 注解，集成 lombok 生成策略，也可以创建 get、set 方法</li>
+          <li>Usage: copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, b Generate -> vo2dto</li>
+          <li>Usage scenarios: for some scenarios that are not suitable for using mapstruct to write mapping classes and do not want a lot of handwritten conversion code</li>
+          <li>Usage reminder: by detecting @ data annotation, integrate Lombok generation strategy, or create get and set methods</li>
       </ul>
     ]]></description>
 
     <change-notes><![CDATA[
       <h3>V2.1.0</h3>
       <ul>
-          <li>复制A对象，在对象B上，生成 x.set(y.get) </li>
-          <li>在对象B属性上也可以直接点击生成 x.set(y.get) </li>
-          <li>支持生成父类对象的方法</li>
+          <li>Copy object a and generate x.set (y.get) on object B </li>
+          <li>On the object B attribute, you can also directly click to generate x.set (y.get) </li>
+          <li>Supports methods for generating parent objects</li>
       </ul>
       <h3>V2.2.0</h3>
       <ul>
-          <li>支持 lombok 生成策略</li>
-          <li>支持对象空转换操作</li>
-          <li>兼容 lombok 中添加自定义 get、set 方法</li>
+          <li>Support Lombok generation strategy</li>
+          <li>Object null conversion is supported</li>
+          <li>Add custom get and set methods in compatible Lombok</li>
       </ul>
       <h3>V2.2.2</h3>
       <ul>
-          <li>兼容方法修复</li>
+          <li>Compatible method repair</li>
       </ul>
     ]]>
     </change-notes>
