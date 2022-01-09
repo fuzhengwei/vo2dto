@@ -36,8 +36,6 @@ public class ConvertSettingUI implements Configurable {
     private JRadioButton selectExistRadioButton;
     private JRadioButton selectNullRadioButton;
 
-    private ButtonGroup buttonGroup = new ButtonGroup();
-
     private GenerateContext generateContext;
     private int repair;
 
@@ -47,6 +45,7 @@ public class ConvertSettingUI implements Configurable {
         this.repair = repair;
 
         // 初始化按钮
+        ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(selectAllRadioButton);
         buttonGroup.add(selectExistRadioButton);
         buttonGroup.add(selectNullRadioButton);
