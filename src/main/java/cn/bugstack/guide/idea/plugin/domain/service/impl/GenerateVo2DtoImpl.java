@@ -5,6 +5,7 @@ import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.domain.service.AbstractGenerateVo2Dto;
 import cn.bugstack.guide.idea.plugin.infrastructure.Utils;
+import cn.bugstack.guide.idea.plugin.ui.ConvertSettingUI;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -15,6 +16,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -104,7 +106,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
             psiClass = psiClasses[0];
 
-            repair += psiClass.getName().length();
+            repair += Objects.requireNonNull(psiClass.getName()).length();
         }
 
         Pattern setMtd = Pattern.compile(setRegex);
@@ -124,7 +126,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        return new SetObjConfigDO(clazzParamName, paramList, paramMtdMap);
+        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(), null == psiClass ? "" : psiClass.getQualifiedName(), clazzParamName, paramList, paramMtdMap);
     }
 
     @Override
@@ -136,7 +138,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         String[] split = systemClipboardText.split("\\s");
 
         if (split.length < 2) {
-            return new GetObjConfigDO(null, null, new HashMap<>());
+            return new GetObjConfigDO("", null, null, new HashMap<>());
         }
 
         String clazzName = split[0].trim();
@@ -158,7 +160,12 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        return new GetObjConfigDO(clazzName, clazzParam, paramMtdMap);
+        return new GetObjConfigDO(psiClass.getQualifiedName(), clazzName, clazzParam, paramMtdMap);
+    }
+
+    @Override
+    protected void convertSetting(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
+        ShowSettingsUtil.getInstance().editConfigurable(project, new ConvertSettingUI(project, generateContext, setObjConfigDO, getObjConfigDO, repair));
     }
 
     @Override

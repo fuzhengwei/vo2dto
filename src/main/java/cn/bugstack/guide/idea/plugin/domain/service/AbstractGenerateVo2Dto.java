@@ -29,8 +29,11 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         // 3. 获取对的的 get 方法集合 【从剪切板获取】
         GetObjConfigDO getObjConfigDO = this.getObjConfigDOByClipboardText(generateContext);
 
-        // 4. 织入代码 set->get
-        this.weavingSetGetCode(generateContext, setObjConfigDO, getObjConfigDO);
+        // 4. 弹框选择
+        this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
+
+        // 5. 织入代码 set->get
+        // this.weavingSetGetCode(generateContext, setObjConfigDO, getObjConfigDO);
     }
 
     protected abstract GenerateContext getGenerateContext(Project project, DataContext dataContext, PsiFile psiFile);
@@ -38,6 +41,8 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
     protected abstract SetObjConfigDO getSetObjConfigDO(GenerateContext generateContext);
 
     protected abstract GetObjConfigDO getObjConfigDOByClipboardText(GenerateContext generateContext);
+
+    protected abstract void convertSetting(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO);
 
     protected abstract void weavingSetGetCode(GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO);
 
@@ -74,6 +79,8 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
             return methodList;
         }
 
+
+        // 正常创建的get、set，直接获取即可
         for (PsiMethod method : methods) {
             String methodName = method.getName();
             if (Pattern.matches(regex, methodName)) {

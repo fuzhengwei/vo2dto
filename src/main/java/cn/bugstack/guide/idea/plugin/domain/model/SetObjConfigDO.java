@@ -5,6 +5,10 @@ import java.util.Map;
 
 public class SetObjConfigDO {
 
+    /** 类的名称 */
+    private String clazzName;
+    /** 类路径名 */
+    private String qualifiedName;
     /** 类属性名 */
     private String clazzParamName;
     /** param 集合，保证顺序性 */
@@ -12,10 +16,28 @@ public class SetObjConfigDO {
     /** key：param val：set方法 */
     private Map<String, String> paramMtdMap;
 
-    public SetObjConfigDO(String clazzParamName, List<String> paramList, Map<String, String> paramMtdMap) {
+    public SetObjConfigDO(String clazzName, String qualifiedName, String clazzParamName, List<String> paramList, Map<String, String> paramMtdMap) {
+        this.clazzName = clazzName;
+        this.qualifiedName = qualifiedName;
         this.clazzParamName = clazzParamName;
         this.paramList = paramList;
         this.paramMtdMap = paramMtdMap;
+    }
+
+    public String getClazzName() {
+        return clazzName;
+    }
+
+    public void setClazzName(String clazzName) {
+        this.clazzName = clazzName;
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 
     public String getClazzParamName() {

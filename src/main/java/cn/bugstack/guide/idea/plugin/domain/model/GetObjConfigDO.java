@@ -4,16 +4,29 @@ import java.util.Map;
 
 public class GetObjConfigDO {
 
+    /** 类路径名 */
+    private String qualifiedName;
+    /** 类名称 */
     private String clazzName;
+    /** 属性名 */
     private String clazzParam;
 
     /** key：param val：get方法 */
     private Map<String, String> paramMtdMap;
 
-    public GetObjConfigDO(String clazzName, String clazzParam, Map<String, String> paramMtdMap) {
+    public GetObjConfigDO(String qualifiedName, String clazzName, String clazzParam, Map<String, String> paramMtdMap) {
+        this.qualifiedName = qualifiedName;
         this.clazzName = clazzName;
         this.clazzParam = clazzParam;
         this.paramMtdMap = paramMtdMap;
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 
     public String getClazzName() {
