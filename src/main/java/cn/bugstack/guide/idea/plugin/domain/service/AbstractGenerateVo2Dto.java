@@ -29,11 +29,9 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         // 3. 获取对的的 get 方法集合 【从剪切板获取】
         GetObjConfigDO getObjConfigDO = this.getObjConfigDOByClipboardText(generateContext);
 
-        // 4. 弹框选择
+        // 4. 弹框选择，织入代码
         this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
 
-        // 5. 织入代码 set->get
-        // this.weavingSetGetCode(generateContext, setObjConfigDO, getObjConfigDO);
     }
 
     protected abstract GenerateContext getGenerateContext(Project project, DataContext dataContext, PsiFile psiFile);

@@ -29,6 +29,10 @@
       <ul>
           <li>Compatible method repair</li>
       </ul>
+      <h3>V2.3.0</h3>
+      <ul>
+          <li>Vo2Dto Convert Settings UI</li>
+      </ul>
     ]]>
     </change-notes>
 
@@ -39,7 +43,7 @@
     <depends>com.intellij.modules.java</depends>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="183.4284"/>
+    <idea-version since-build="181.5540"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
