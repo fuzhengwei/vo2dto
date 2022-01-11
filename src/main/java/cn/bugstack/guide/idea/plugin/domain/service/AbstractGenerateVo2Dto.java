@@ -4,6 +4,7 @@ import cn.bugstack.guide.idea.plugin.application.IGenerateVo2Dto;
 import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
 import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
+import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -29,8 +30,14 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         // 3. 获取对的的 get 方法集合 【从剪切板获取】
         GetObjConfigDO getObjConfigDO = this.getObjConfigDOByClipboardText(generateContext);
 
-        // 4. 弹框选择，织入代码
-        this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
+        // 4. 弹框选择，织入代码。分为弹窗提醒和非弹窗提醒
+        DataSetting.DataState state = DataSetting.getInstance(project).getState();
+        assert state != null;
+        if ("show".equals(state.getConfigRadio())) {
+            this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
+        } else {
+            this.weavingSetGetCode(generateContext, setObjConfigDO, getObjConfigDO);
+        }
 
     }
 

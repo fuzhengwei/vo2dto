@@ -4,7 +4,10 @@
     <vendor email="184172133@qq.com" url="https://bugstack.cn">小傅哥</vendor>
 
     <description><![CDATA[
-      Batch weave "x.set (y.get)" code into the selected objects to help developers automatically generate vo2dto conversion code. video：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a><br>
+      Batch weave "x.set (y.get)" code into the selected objects to help developers automatically generate vo2dto conversion code.
+      <br/>github：<a href="https://github.com/fuzhengwei/vo2dto">https://github.com/fuzhengwei/vo2dto</a>
+      <br/>video：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a>
+      <br/>help doc：<a href="https://github.com/fuzhengwei/vo2dto/wiki">https://github.com/fuzhengwei/vo2dto/wiki</a><br>
       <ul>
           <li>Usage: copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, b Generate -> vo2dto</li>
           <li>Usage scenarios: for some scenarios that are not suitable for using mapstruct to write mapping classes and do not want a lot of handwritten conversion code</li>
@@ -33,6 +36,11 @@
       <ul>
           <li>Vo2Dto Convert Settings UI</li>
       </ul>
+      <h3>V2.4.0</h3>
+      <ul>
+          <li>Optimize selection mapping relationship</li>
+          <li>Provide form presentation configuration</li>
+      </ul>
     ]]>
     </change-notes>
 
@@ -43,10 +51,15 @@
     <depends>com.intellij.modules.java</depends>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="182.5262"/>
+    <idea-version since-build="193.5662"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <projectService serviceImplementation="cn.bugstack.guide.idea.plugin.infrastructure.DataSetting"/>
+
+        <!-- 配置 File -> Settings -> Tools -->
+        <projectConfigurable groupId="tools" displayName="Vo2Dto Config" id="vo2dto"
+                             instance="cn.bugstack.guide.idea.plugin.action.ConfigSettingFactory"/>
     </extensions>
 
     <actions>

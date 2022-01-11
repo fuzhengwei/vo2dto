@@ -15,13 +15,16 @@ public class SetObjConfigDO {
     private List<String> paramList;
     /** key：param val：set方法 */
     private Map<String, String> paramMtdMap;
+    /** 位移记录 */
+    private int repair;
 
-    public SetObjConfigDO(String clazzName, String qualifiedName, String clazzParamName, List<String> paramList, Map<String, String> paramMtdMap) {
+    public SetObjConfigDO(String clazzName, String qualifiedName, String clazzParamName, List<String> paramList, Map<String, String> paramMtdMap, int repair) {
         this.clazzName = clazzName;
         this.qualifiedName = qualifiedName;
         this.clazzParamName = clazzParamName;
         this.paramList = paramList;
         this.paramMtdMap = paramMtdMap;
+        this.repair = repair;
     }
 
     public String getClazzName() {
@@ -62,5 +65,13 @@ public class SetObjConfigDO {
 
     public void setParamMtdMap(Map<String, String> paramMtdMap) {
         this.paramMtdMap = paramMtdMap;
+    }
+
+    public int getRepair() {
+        return repair;
+    }
+
+    public void setRepair(int repair) {
+        this.repair = repair;
     }
 }

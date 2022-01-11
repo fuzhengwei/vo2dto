@@ -29,11 +29,8 @@ import java.util.regex.Pattern;
 
 public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
-    private int repair = 0;
-
     @Override
     protected GenerateContext getGenerateContext(Project project, DataContext dataContext, PsiFile psiFile) {
-
         // 基础信息
         Editor editor = CommonDataKeys.EDITOR.getData(dataContext);
         PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
@@ -58,7 +55,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
     @Override
     protected SetObjConfigDO getSetObjConfigDO(GenerateContext generateContext) {
-        repair = 0;
+        int repair = 0;
         PsiClass psiClass = null;
         String clazzParamName = null;
 
@@ -126,7 +123,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(), null == psiClass ? "" : psiClass.getQualifiedName(), clazzParamName, paramList, paramMtdMap);
+        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(), null == psiClass ? "" : psiClass.getQualifiedName(), clazzParamName, paramList, paramMtdMap, repair);
     }
 
     @Override
@@ -165,7 +162,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
     @Override
     protected void convertSetting(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
-        ShowSettingsUtil.getInstance().editConfigurable(project, new ConvertSettingUI(project, generateContext, setObjConfigDO, getObjConfigDO, repair));
+        ShowSettingsUtil.getInstance().editConfigurable(project, new ConvertSettingUI(project, generateContext, setObjConfigDO, getObjConfigDO));
     }
 
     @Override
@@ -173,7 +170,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         Application application = ApplicationManager.getApplication();
 
         // 获取空格位置长度
-        int distance = Utils.getWordStartOffset(generateContext.getEditorText(), generateContext.getOffset()) - generateContext.getStartOffset() - repair;
+        int distance = Utils.getWordStartOffset(generateContext.getEditorText(), generateContext.getOffset()) - generateContext.getStartOffset() - setObjConfigDO.getRepair();
 
         application.runWriteAction(() -> {
             StringBuilder blankSpace = new StringBuilder();
