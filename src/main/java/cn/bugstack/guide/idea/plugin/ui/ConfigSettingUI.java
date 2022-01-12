@@ -1,5 +1,8 @@
 package cn.bugstack.guide.idea.plugin.ui;
 
+import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
+import com.intellij.openapi.project.Project;
+
 import javax.swing.*;
 
 /**
@@ -15,12 +18,18 @@ public class ConfigSettingUI {
     private JRadioButton showRadioButton;
     private JRadioButton hideButton;
 
-    public ConfigSettingUI() {
+    public ConfigSettingUI(Project project) {
         // 添加按钮组
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(showRadioButton);
         buttonGroup.add(hideButton);
-        showRadioButton.setSelected(true);
+        DataSetting.DataState state = DataSetting.getInstance(project).getState();
+
+        if ("hide".equals(state.getConfigRadio())) {
+            hideButton.setSelected(true);
+        } else {
+            showRadioButton.setSelected(true);
+        }
     }
 
     public JComponent getComponent() {

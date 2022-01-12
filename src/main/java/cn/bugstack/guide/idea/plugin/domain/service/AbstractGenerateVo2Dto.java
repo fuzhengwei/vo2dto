@@ -33,10 +33,10 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         // 4. 弹框选择，织入代码。分为弹窗提醒和非弹窗提醒
         DataSetting.DataState state = DataSetting.getInstance(project).getState();
         assert state != null;
-        if ("show".equals(state.getConfigRadio())) {
-            this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
-        } else {
+        if ("hide".equals(state.getConfigRadio())) {
             this.weavingSetGetCode(generateContext, setObjConfigDO, getObjConfigDO);
+        } else {
+            this.convertSetting(project, generateContext, setObjConfigDO, getObjConfigDO);
         }
 
     }

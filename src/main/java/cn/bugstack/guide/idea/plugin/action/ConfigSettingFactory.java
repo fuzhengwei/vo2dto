@@ -13,13 +13,14 @@ import javax.swing.*;
 
 public class ConfigSettingFactory implements SearchableConfigurable {
 
-    private ConfigSettingUI configSettingUI = new ConfigSettingUI();
+    private ConfigSettingUI configSettingUI;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final Project project;
 
     public ConfigSettingFactory(Project project) {
         this.project = project;
+        configSettingUI = new ConfigSettingUI(project);
     }
 
     @Override
