@@ -7,12 +7,20 @@ import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * @description: 转换配置框体
@@ -30,6 +38,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JRadioButton selectAllRadioButton;
     private JRadioButton selectExistRadioButton;
     private JRadioButton selectNullRadioButton;
+    private JRadioButton setNullRadioButton;
 
     public ConvertSettingUI(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
         super(project, generateContext, setObjConfigDO, getObjConfigDO);
@@ -40,6 +49,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         buttonGroup.add(selectAllRadioButton);
         buttonGroup.add(selectExistRadioButton);
         buttonGroup.add(selectNullRadioButton);
+        buttonGroup.add(setNullRadioButton);
 
         // 转换类名
         fromLabelVal.setText(getFromLabelValText());
@@ -47,14 +57,26 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
 
         // 设置元素
         convertTable.setModel(new DefaultTableModel(getTableData(), getTableTitle()));
+
         TableColumn tc = convertTable.getColumnModel().getColumn(0);
         tc.setCellEditor(convertTable.getDefaultEditor(Boolean.class));
         tc.setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JCheckBox ck = new JCheckBox();
-            ck.setSelected(isSelected);
+            ck.setSelected((Boolean) value);
+            ck.setHorizontalAlignment(SwingConstants.CENTER);
             return ck;
         });
         tc.setMaxWidth(20);
+
+        convertTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if ("setNullRadioButton".equals(state.getSelectRadio())) return;
+                int rowIdx = convertTable.rowAtPoint(e.getPoint());
+                Boolean isCheck = (Boolean) convertTable.getValueAt(rowIdx, 0);
+                convertTable.setValueAt(!isCheck, rowIdx, 0);
+            }
+        });
 
         // 添加事件
         addRadioButtonEvent(state);
@@ -66,7 +88,11 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private void addRadioButtonEvent(DataSetting.DataState state) {
         // 选择全部的
         selectAllRadioButton.addActionListener(e -> {
-            convertTable.selectAll();
+            convertTable.clearSelection();
+            int rowCount = convertTable.getRowCount();
+            for (int i = 0; i < rowCount; i++) {
+                convertTable.setValueAt(true, i, 0);
+            }
             state.setSelectRadio("selectAllRadioButton");
         });
 
@@ -80,7 +106,15 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         // 清空选择
         selectNullRadioButton.addActionListener(e -> {
             convertTable.clearSelection();
+            clearJCheckBoxSelection();
             state.setSelectRadio("selectNullRadioButton");
+        });
+
+        // 无论是否选择都 setNull
+        setNullRadioButton.addActionListener(e -> {
+            convertTable.clearSelection();
+            clearJCheckBoxSelection();
+            state.setSelectRadio("setNullRadioButton");
         });
     }
 
@@ -88,7 +122,10 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         switch (state.getSelectRadio()) {
             case "selectAllRadioButton":
                 selectAllRadioButton.setSelected(true);
-                convertTable.selectAll();
+                int rowCount = convertTable.getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    convertTable.setValueAt(true, i, 0);
+                }
                 break;
             case "selectExistRadioButton":
                 convertTable.clearSelection();
@@ -96,19 +133,31 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
                 selectExistRadioButton.setSelected(true);
                 break;
             case "selectNullRadioButton":
-                convertTable.clearSelection();
+                clearJCheckBoxSelection();
                 selectNullRadioButton.setSelected(true);
+                break;
+            case "setNullRadioButton":
+                clearJCheckBoxSelection();
+                setNullRadioButton.setSelected(true);
                 break;
         }
     }
 
+    private void clearJCheckBoxSelection() {
+        int rowCount = convertTable.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            convertTable.setValueAt(false, i, 0);
+        }
+    }
+
     private void setRowSelectData() {
+        clearJCheckBoxSelection();
         int rowCount = convertTable.getRowCount();
         for (int i = 0; i < rowCount; i++) {
             Object setVal = convertTable.getValueAt(i, 1);
             Object getVal = convertTable.getValueAt(i, 2);
             if (null != setVal && null != getVal) {
-                convertTable.addRowSelectionInterval(i, i);
+                convertTable.setValueAt(true, i, 0);
             }
         }
     }

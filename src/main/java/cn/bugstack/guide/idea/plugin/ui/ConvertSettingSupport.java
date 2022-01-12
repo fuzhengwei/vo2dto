@@ -63,6 +63,7 @@ public class ConvertSettingSupport {
         List<String> setMtdList = setObjConfigDO.getParamList();
         Object[][] data = new Object[setMtdList.size()][3];
         for (int i = 0; i < setMtdList.size(); i++) {
+            data[i][0] = Boolean.FALSE;
             // set info
             String param = setMtdList.get(i);
             data[i][1] = setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param);
@@ -89,7 +90,7 @@ public class ConvertSettingSupport {
             int lineNumberCurrent = generateContext.getDocument().getLineNumber(generateContext.getOffset()) + 1;
 
             // selectNullRadioButton -> 全部清空，则默认生成空转换
-            if ("selectNullRadioButton".equals(state.getSelectRadio())) {
+            if ("setNullRadioButton".equals(state.getSelectRadio())) {
                 List<String> setMtdList = setObjConfigDO.getParamList();
                 for (String param : setMtdList) {
                     int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
@@ -105,8 +106,11 @@ public class ConvertSettingSupport {
             }
 
             // selectAllRadioButton、selectExistRadioButton -> 按照选择进行转换插入
-            int[] selectedRows = convertTable.getSelectedRows();
-            for (int idx : selectedRows) {
+            int rowCount = convertTable.getRowCount();
+            for (int idx = 0; idx < rowCount; idx++) {
+                boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
+                if (!isSelected) continue;
+
                 int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
                 Object setVal = convertTable.getValueAt(idx, 1);
                 Object getVal = convertTable.getValueAt(idx, 2);
@@ -116,7 +120,6 @@ public class ConvertSettingSupport {
                     generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
                     generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                 });
-
             }
 
         });
