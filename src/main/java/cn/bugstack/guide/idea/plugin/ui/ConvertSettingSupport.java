@@ -89,7 +89,7 @@ public class ConvertSettingSupport {
 
             int lineNumberCurrent = generateContext.getDocument().getLineNumber(generateContext.getOffset()) + 1;
 
-            // selectNullRadioButton -> 全部清空，则默认生成空转换
+            // setNullRadioButton -> 全部清空，则默认生成空转换
             if ("setNullRadioButton".equals(state.getSelectRadio())) {
                 List<String> setMtdList = setObjConfigDO.getParamList();
                 for (String param : setMtdList) {
