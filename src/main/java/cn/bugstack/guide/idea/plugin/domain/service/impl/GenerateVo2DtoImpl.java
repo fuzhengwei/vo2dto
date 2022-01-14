@@ -16,6 +16,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.impl.DocumentImpl;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -26,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static com.intellij.ui.LoadingNode.getText;
 
 public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
@@ -138,19 +141,39 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             return new GetObjConfigDO("", null, null, new HashMap<>());
         }
 
-        String clazzName = split[0].trim();
+        // 摘取复制对象中的类和属性，同时支持复制 cn.xxx.class
+        String clazzName;
         String clazzParam = split[1].trim();
 
-        // 获取类
+        String clazzNameImport = "";
+        String clazzNameStr = split[0].trim();
+        if (clazzNameStr.indexOf(".") > 0) {
+            clazzName = clazzNameStr.substring(clazzNameStr.lastIndexOf(".") + 1);
+            clazzNameImport = clazzNameStr;
+        } else {
+            clazzName = split[0].trim();
+        }
+
+        // 获取同名类集合
         PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
 
         // 上下文检测，找到符合的复制类
-        PsiClass psiContextClass = null;
-        String contextName = generateContext.getPsiFile().getName();
-        contextName = contextName.substring(0, contextName.indexOf("."));
-        for (PsiClass psiClass : psiClasses) {
-            if (contextName.equals(psiClass.getContext())){
-                psiContextClass = psiClass;
+        PsiClass psiContextClass = psiClasses[0];
+
+        if (psiClasses.length > 1) {
+            // 获取比对包文本
+            String docText;
+            if (!"".equals(clazzNameImport)) {
+                docText = clazzNameImport;
+            } else {
+                docText = generateContext.getDocument().getText();
+            }
+            // 循环比对
+            for (PsiClass psiClass : psiClasses) {
+                if (docText.contains(Objects.requireNonNull(psiClass.getQualifiedName()))) {
+                    psiContextClass = psiClass;
+                    break;
+                }
             }
         }
 
