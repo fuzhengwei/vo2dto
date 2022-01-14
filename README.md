@@ -4,7 +4,6 @@
 <div align="center">
     <a href="https://plugins.jetbrains.com/plugin/18262-vo2dto" style="text-decoration:none"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/logo-02.png" width="128px"></a>
     <h2>
-     vo2dto
     </h2>
 </div>
 
