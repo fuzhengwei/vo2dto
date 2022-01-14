@@ -143,8 +143,18 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
         // 获取类
         PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
-        PsiClass psiClass = psiClasses[0];
-        List<PsiClass> psiClassLinkList = getPsiClassLinkList(psiClass);
+
+        // 上下文检测，找到符合的复制类
+        PsiClass psiContextClass = null;
+        String contextName = generateContext.getPsiFile().getName();
+        contextName = contextName.substring(0, contextName.indexOf("."));
+        for (PsiClass psiClass : psiClasses) {
+            if (contextName.equals(psiClass.getContext())){
+                psiContextClass = psiClass;
+            }
+        }
+
+        List<PsiClass> psiClassLinkList = getPsiClassLinkList(psiContextClass);
 
         Map<String, String> paramMtdMap = new HashMap<>();
         Pattern getM = Pattern.compile(getRegex);
@@ -157,7 +167,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        return new GetObjConfigDO(psiClass.getQualifiedName(), clazzName, clazzParam, paramMtdMap);
+        return new GetObjConfigDO(psiContextClass.getQualifiedName(), clazzName, clazzParam, paramMtdMap);
     }
 
     @Override
