@@ -14,10 +14,9 @@
 
 <h4 align="center">一款用于帮助使用 IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具.</h4>
 
-<div align="center">
-    <a href="https://plugins.jetbrains.com/plugin/18262-vo2dto" style="text-decoration:none"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/use-demo.png?raw=true" width="700px"></a>
-</div>
-<br/>
+| IDEA Plugin vo2dto 使用演示|
+|:---:|
+| ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/use-demo.png?raw=true) |
 
 
 ## ⛳ 目录
