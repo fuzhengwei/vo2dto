@@ -49,6 +49,10 @@
       <ul>
           <li>feat table check box</li>
       </ul>
+      <h3>V2.4.3</h3>
+      <ul>
+          <li>verify the context of the copied object and find the matching class</li>
+      </ul>
     ]]>
     </change-notes>
 
