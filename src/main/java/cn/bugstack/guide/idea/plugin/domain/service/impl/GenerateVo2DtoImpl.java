@@ -20,6 +20,7 @@ import com.intellij.openapi.editor.impl.DocumentImpl;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -39,6 +40,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
         assert editor != null;
         Document document = editor.getDocument();
+
+        ((PsiJavaFileImpl) psiFile).getImportList();
 
         // 封装生成对象上下文
         GenerateContext generateContext = new GenerateContext();
@@ -158,23 +161,41 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
 
         // 上下文检测，找到符合的复制类
-        PsiClass psiContextClass = psiClasses[0];
-
+        PsiClass psiContextClass = null;
+        // 相同类名处理
         if (psiClasses.length > 1) {
             // 获取比对包文本
-            String docText;
+            List<String> importList;
             if (!"".equals(clazzNameImport)) {
-                docText = clazzNameImport;
+                importList = Collections.singletonList(clazzNameImport);
             } else {
-                docText = generateContext.getDocument().getText();
+                importList = getImportList(generateContext.getDocument().getText());
             }
-            // 循环比对
+            // 循环比对，通过引入的包名与类做包名做对比
             for (PsiClass psiClass : psiClasses) {
-                if (docText.contains(Objects.requireNonNull(psiClass.getQualifiedName()))) {
+                String qualifiedName = Objects.requireNonNull(psiClass.getQualifiedName());
+                String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
+                if (importList.contains(packageName)) {
                     psiContextClass = psiClass;
                     break;
                 }
             }
+            // 同包下比对
+            if (null == psiContextClass) {
+                String psiFilePackageName = ((PsiJavaFileImpl) generateContext.getPsiFile()).getPackageName();
+                for (PsiClass psiClass : psiClasses) {
+                    String qualifiedName = Objects.requireNonNull(psiClass.getQualifiedName());
+                    String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
+                    if (psiFilePackageName.equals(packageName)){
+                        psiContextClass = psiClass;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (null == psiContextClass){
+            psiContextClass = psiClasses[0];
         }
 
         List<PsiClass> psiClassLinkList = getPsiClassLinkList(psiContextClass);

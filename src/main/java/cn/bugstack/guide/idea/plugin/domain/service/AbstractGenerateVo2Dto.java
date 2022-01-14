@@ -12,6 +12,7 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
@@ -98,6 +99,16 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
 
     private boolean isUsedLombok(PsiClass psiClass) {
         return null != psiClass.getAnnotation("lombok.Data");
+    }
+
+    protected List<String> getImportList(String docText){
+        List<String> list = new ArrayList<>();
+        Pattern p = Pattern.compile("import.*?;");
+        Matcher m = p.matcher(docText);
+        while(m.find()){
+            list.add(m.group(0));
+        }
+        return list;
     }
 
 }

@@ -53,6 +53,10 @@
       <ul>
           <li>verify the context of the copied object and find the matching class</li>
       </ul>
+      <h3>V2.4.4</h3>
+      <ul>
+          <li>Support to find similar names under multiple packages</li>
+      </ul>
     ]]>
     </change-notes>
 
@@ -77,7 +81,7 @@
     <actions>
         <!-- Add your actions here -->
         <action id="Vo2DtoGenerateAction" class="cn.bugstack.guide.idea.plugin.action.Vo2DtoGenerateAction"
-                text="Vo2Dto - 小傅哥" description="Vo2Dto generate util" icon="/icons/logo.svg">
+                text="Vo2Dto - 小傅哥" description="Vo2Dto generate util">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift K"/>
         </action>
