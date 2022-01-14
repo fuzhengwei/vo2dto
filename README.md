@@ -1,5 +1,7 @@
 # :art: IDEA Plugin vo2dto
 
+>👉 一款用于帮助使用 IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具.
+
 <br/>
 <div align="center">
     <a href="https://plugins.jetbrains.com/plugin/18262-vo2dto" style="text-decoration:none"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/logo-02.png" width="128px"></a>
@@ -7,12 +9,12 @@
 <br/>
 <div align="center">
 	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-version.svg"></a>
-	<a href="#"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-author.svg"></a>
-	<a href="#"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-bilibili.svg"></a>
+	<a href="https://github.com/fuzhengwei"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-author.svg"></a>
+	<a href="https://youtu.be/HOlNi2b0oXI"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-bilibili.svg"></a>
 	<a href="#"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-idea.svg"></a>
 </div>
 
-<h4 align="center">一款用于帮助使用 IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具.</h4>
+<br/>
 
 | IDEA Plugin vo2dto 使用演示|
 |:---:|
