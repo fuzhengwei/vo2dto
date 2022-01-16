@@ -57,6 +57,10 @@
       <ul>
           <li>Support to find similar names under multiple packages</li>
       </ul>
+      <h3>V2.4.5</h3>
+      <ul>
+          <li>fix Support to find similar names under multiple packages</li>
+      </ul>
     ]]>
     </change-notes>
 

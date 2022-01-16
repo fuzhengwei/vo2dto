@@ -101,12 +101,13 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         return null != psiClass.getAnnotation("lombok.Data");
     }
 
-    protected List<String> getImportList(String docText){
+    protected List<String> getImportList(String docText) {
         List<String> list = new ArrayList<>();
-        Pattern p = Pattern.compile("import.*?;");
+        Pattern p = Pattern.compile("import(.*?);");
         Matcher m = p.matcher(docText);
-        while(m.find()){
-            list.add(m.group(0));
+        while (m.find()) {
+            String val = m.group(1).replaceAll(" ","");
+            list.add(val.substring(0, val.lastIndexOf(".")));
         }
         return list;
     }
