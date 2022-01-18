@@ -55,7 +55,7 @@
 
 ### 2. 手动安装
 
-- 下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.4.3](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.4.3)
+- 下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.4.6](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.4.6)
 - 安装：
 
 | IDEA Plugin 手动安装，导入下载包|
