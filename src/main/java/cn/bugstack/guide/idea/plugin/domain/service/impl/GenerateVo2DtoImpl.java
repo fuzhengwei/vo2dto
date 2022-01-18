@@ -106,7 +106,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
 
             String clazzName = elementAt.getText();
-            PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
+            PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
             psiClass = psiClasses[0];
 
             repair += Objects.requireNonNull(psiClass.getName()).length();
