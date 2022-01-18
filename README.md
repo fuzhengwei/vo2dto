@@ -19,7 +19,7 @@
 ## ⛳ 目录
 
 -  [特性](https://github.com/fuzhengwei/vo2dto#sparkles-%E7%89%B9%E6%80%A7)
--  [使用]()
+-  [使用](https://github.com/fuzhengwei/vo2dto#hammer-%E4%BD%BF%E7%94%A8)
 -  [安装](https://github.com/fuzhengwei/vo2dto#hammer_and_wrench-%E5%AE%89%E8%A3%85)
    -  [1. 在线安装](https://github.com/fuzhengwei/vo2dto#1-%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85)
    -  [2. 手动安装](https://github.com/fuzhengwei/vo2dto#2-%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85)
@@ -36,7 +36,10 @@
 
 ## :hammer: 使用
 
-- 视频：[https://www.bilibili.com/video/BV13Y411h7fv](https://www.bilibili.com/video/BV13Y411h7fv)
+- 视频：[https://www.bilibili.com/video/BV13Y411h7fv](https://www.bilibili.com/video/BV13Y411h7fv) - `视频内有完整的使用介绍和插件设计` 
+- 描述：你需要复制被转换 X x = new X() 中的 X x 部分，无论它是方法入参还是实例化或者是接口回值，接下来鼠标定位到转换对象 Y y 上，可以定位到`类 大Y`、或者`属性 小y`，这样我就可以知道你要做到是X的对象的属性值，转换到Y对象的属性值上。接下来帮你快速生成全部的 `y.set(x.get)` 代码片段。
+
+---
 
 | IDEA Plugin vo2dto 使用演示图|
 |:---:|
