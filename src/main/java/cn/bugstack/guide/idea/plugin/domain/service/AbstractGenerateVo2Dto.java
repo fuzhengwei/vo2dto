@@ -12,6 +12,7 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +73,7 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
                 // 如果是 final 类型的字段则不进行处理
-                if (Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText().contains("final")){
+                if (Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText().contains("serialVersionUID")){
                     continue;
                 }                
                 String name = psiField.getNameIdentifier().getText();
