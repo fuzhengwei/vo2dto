@@ -7,6 +7,7 @@
       Batch weave "x.set (y.get)" code into the selected objects to help developers automatically generate vo2dto conversion code.
       <br/>github：<a href="https://github.com/fuzhengwei/vo2dto">https://github.com/fuzhengwei/vo2dto</a>
       <br/>video：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a>
+      <br/>Bilibili：<a href="https://www.bilibili.com/video/BV13Y411h7fv">https://www.bilibili.com/video/BV13Y411h7fv</a>
       <br/>help doc：<a href="https://github.com/fuzhengwei/vo2dto/wiki">https://github.com/fuzhengwei/vo2dto/wiki</a><br>
       <ul>
           <li>Usage: copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, b Generate -> vo2dto</li>
@@ -65,6 +66,11 @@
       <ul>
           <li>If it is a field of final type, it will not be processed</li>
           <li>copy Object in globalSearch by all scope</li>
+      </ul>
+      <h3>V2.4.7</h3>
+      <ul>
+          <li>Conversion object attribute value search</li>
+          <li>fix copy Object in globalSearch by all scope</li>
       </ul>
     ]]>
     </change-notes>
