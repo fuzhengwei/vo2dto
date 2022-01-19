@@ -121,7 +121,12 @@
 - v2.4.6
 
   - 修改搜索对象范围，支持pom引入对象搜索
-  - 屏蔽 lombok 下 serialVersionUID 属性的生成       
+  - 屏蔽 lombok 下 serialVersionUID 属性的生成  
+
+- v2.4.7
+
+  - 支持转换对象，鼠标定位到属性时候的类搜索和匹配
+  - 处理全局扫描访问 `GlobalSearchScope.allScope`  
 
 ## :alembic: 技术栈
 
