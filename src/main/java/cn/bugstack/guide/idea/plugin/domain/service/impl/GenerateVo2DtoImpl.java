@@ -20,6 +20,7 @@ import com.intellij.openapi.editor.impl.DocumentImpl;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.PsiJavaCodeReferenceElementImpl;
 import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
@@ -106,8 +107,25 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
 
             String clazzName = elementAt.getText();
+
             PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
-            psiClass = psiClasses[0];
+
+            if (psiClasses.length > 1) {
+                assert elementAt.getContext() != null;
+                String qualifiedName = ((PsiJavaCodeReferenceElementImpl) elementAt.getContext()).getQualifiedName();
+                for (PsiClass clazz : psiClasses) {
+                    if (Objects.equals(clazz.getQualifiedName(), qualifiedName)) {
+                        psiClass = clazz;
+                        break;
+                    }
+                }
+            } else {
+                psiClass = psiClasses[0];
+            }
+
+            if (null == psiClass) {
+                psiClass = psiClasses[0];
+            }
 
             repair += Objects.requireNonNull(psiClass.getName()).length();
         }
@@ -158,7 +176,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         }
 
         // 获取同名类集合
-        PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.projectScope(generateContext.getProject()));
+        PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject()).getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
 
         // 上下文检测，找到符合的复制类
         PsiClass psiContextClass = null;
@@ -186,7 +204,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                 for (PsiClass psiClass : psiClasses) {
                     String qualifiedName = Objects.requireNonNull(psiClass.getQualifiedName());
                     String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
-                    if (psiFilePackageName.equals(packageName)){
+                    if (psiFilePackageName.equals(packageName)) {
                         psiContextClass = psiClass;
                         break;
                     }
@@ -194,7 +212,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        if (null == psiContextClass){
+        if (null == psiContextClass) {
             psiContextClass = psiClasses[0];
         }
 
