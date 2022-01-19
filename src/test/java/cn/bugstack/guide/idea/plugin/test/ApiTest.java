@@ -55,12 +55,21 @@ public class ApiTest {
             "}\n" +
             "\n";
 
+    static String str2 = "public static  final String x = 00;";
+    static String str3 = "public final  static String x = 00;";
+    static String str4 = "public  static String x = 00;";
+
     public static void main(String[] args) {
-        Pattern p = Pattern.compile("import.*?;");
-        Matcher m = p.matcher(str);
+        Pattern p = Pattern.compile("static.*?final|final.*?static");
+        Matcher m = p.matcher(str4);
+
+        System.out.println(m.find());
+
         while(m.find()){
             System.out.println(m.group(0));
         }
+
+
     }
 
 }

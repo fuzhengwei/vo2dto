@@ -70,12 +70,19 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
 
         // 判断使用了 lombok，需要补全生成 get、set
         if (isUsedLombok(psiClass)) {
+            Pattern p = Pattern.compile("static.*?final|final.*?static");
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
-                // 如果是 final 类型的字段则不进行处理
-                if (Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText().contains("serialVersionUID")){
+                String fieldVal = Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText();
+                // serialVersionUID 判断
+                if (fieldVal.contains("serialVersionUID")){
                     continue;
-                }                
+                }
+                // static final 常量判断过滤
+                Matcher matcher = p.matcher(fieldVal);
+                if (matcher.find()){
+                    continue;
+                }
                 String name = psiField.getNameIdentifier().getText();
                 methodList.add(typeStr + name.substring(0, 1).toUpperCase() + name.substring(1));
             }
