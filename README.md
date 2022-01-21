@@ -4,21 +4,21 @@
 
 <br/>
 <div align="center">
-    <a href="https://plugins.jetbrains.com/plugin/18262-vo2dto" style="text-decoration:none"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/logo-02.png" width="128px"></a>
+    <a href="https://plugins.jetbrains.com/plugin/18262-vo2dto" style="text-decoration:none"><img src="/docs/_media/logo-02.png" width="128px"></a>
 </div>
 <br/>
 <div align="center">
 	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-version.svg"></a>
-	<a href="https://bugstack.cn/"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-author.svg"></a>
-	<a href="https://www.bilibili.com/video/BV13Y411h7fv"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-bilibili.svg"></a>
-	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-idea.svg"></a>
+	<a href="https://bugstack.cn/"><img src="/docs/_media/npm-author.svg"></a>
+	<a href="https://www.bilibili.com/video/BV13Y411h7fv"><img src="/docs/_media/npm-bilibili.svg"></a>
+	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="/docs/_media/npm-idea.svg"></a>
 </div>
 
 <h4 align="center">一款用于帮助使用 IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具.</h4>
 
 | `对vo2dto感兴趣的，程序员👨🏻‍💻‍，来自这些国家` |
 |:---:|
-| ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/visits.png) |
+| ![](/docs/_media/visits.png) |
 
 ## ⛳ 目录
 
@@ -48,7 +48,7 @@
 
 | IDEA Plugin vo2dto 使用演示图|
 |:---:|
-| ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/use-demo.png) |
+| ![](/docs/_media/use-demo.png) |
 
 ## :hammer_and_wrench: 安装
 
@@ -56,7 +56,7 @@
 
 | IDEA Plugin 搜索vo2dto直接在线安装即可|
 |:---:|
-| ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/install.png) |
+| ![](/docs/_media/install.png) |
 
 ### 2. 手动安装
 
@@ -65,7 +65,7 @@
 
 | IDEA Plugin 手动安装，导入下载包|
 |:---:|
-| ![](https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/install02.png) |
+| ![](/docs/_media/install02.png) |
 
 ## 🐾 迭代
 
