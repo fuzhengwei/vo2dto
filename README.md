@@ -8,7 +8,7 @@
 </div>
 <br/>
 <div align="center">
-	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/npm-version.svg"></a>
+	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="/docs/_media/npm-version.svg"></a>
 	<a href="https://bugstack.cn/"><img src="/docs/_media/npm-author.svg"></a>
 	<a href="https://www.bilibili.com/video/BV13Y411h7fv"><img src="/docs/_media/npm-bilibili.svg"></a>
 	<a href="https://plugins.jetbrains.com/plugin/18262-vo2dto"><img src="/docs/_media/npm-idea.svg"></a>
