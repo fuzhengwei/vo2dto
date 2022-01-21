@@ -128,7 +128,7 @@
   - 支持转换对象，鼠标定位到属性时候的类搜索和匹配
   - 处理全局扫描访问 `GlobalSearchScope.allScope`  
 
-## :alembic: 技术栈
+## ⚗️ 技术栈
 
 - Java
 - IDEA Plugin SDK
