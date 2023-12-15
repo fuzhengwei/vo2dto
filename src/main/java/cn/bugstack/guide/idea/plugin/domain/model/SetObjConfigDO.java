@@ -15,16 +15,29 @@ public class SetObjConfigDO {
     private List<String> paramList;
     /** key：param val：set方法 */
     private Map<String, String> paramMtdMap;
+    /** key：param val：set方法对应的字段属性 */
+    private Map<String, String> paramNameMap;
     /** 位移记录 */
     private int repair;
+    /** 是否使用了 Lombok 的 Builder 模式 */
+    private boolean isLombokBuilder;
 
-    public SetObjConfigDO(String clazzName, String qualifiedName, String clazzParamName, List<String> paramList, Map<String, String> paramMtdMap, int repair) {
+    public SetObjConfigDO(String clazzName,
+                          String qualifiedName,
+                          String clazzParamName,
+                          List<String> paramList,
+                          Map<String, String> paramMtdMap,
+                          Map<String, String> paramNameMap,
+                          int repair,
+                          boolean isLombokBuilder) {
         this.clazzName = clazzName;
         this.qualifiedName = qualifiedName;
         this.clazzParamName = clazzParamName;
         this.paramList = paramList;
         this.paramMtdMap = paramMtdMap;
+        this.paramNameMap = paramNameMap;
         this.repair = repair;
+        this.isLombokBuilder = isLombokBuilder;
     }
 
     public String getClazzName() {
@@ -74,4 +87,17 @@ public class SetObjConfigDO {
     public void setRepair(int repair) {
         this.repair = repair;
     }
+
+    public boolean isLombokBuilder() {
+        return isLombokBuilder;
+    }
+
+    public void setLombokBuilder(boolean lombokBuilder) {
+        isLombokBuilder = lombokBuilder;
+    }
+
+    public Map<String, String> getParamNameMap() {
+        return paramNameMap;
+    }
+
 }

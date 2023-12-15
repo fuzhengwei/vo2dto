@@ -2,6 +2,7 @@ package cn.bugstack.guide.idea.plugin.domain.service.impl;
 
 import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
 import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
+import cn.bugstack.guide.idea.plugin.domain.model.MethodVO;
 import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.domain.service.AbstractGenerateVo2Dto;
 import cn.bugstack.guide.idea.plugin.infrastructure.Utils;
@@ -134,20 +135,31 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         // 获取类的set方法并存放起来
         List<String> paramList = new ArrayList<>();
         Map<String, String> paramMtdMap = new HashMap<>();
+        Map<String, String> paramNameMap = new HashMap<>();
 
         List<PsiClass> psiClassLinkList = getPsiClassLinkList(psiClass);
         for (PsiClass psi : psiClassLinkList) {
-            List<String> methodsList = getMethods(psi, setRegex, "set");
-            for (String methodName : methodsList) {
+            MethodVO methodVO = getMethods(psi, setRegex, "set");
+            for (String methodName : methodVO.getMethodNameList()) {
                 // 替换属性
                 String param = setMtd.matcher(methodName).replaceAll("$1").toLowerCase();
                 // 保存获取的属性信息
                 paramMtdMap.put(param, methodName);
                 paramList.add(param);
             }
+
+            for (String fieldName : methodVO.getFieldNameList()) {
+                paramNameMap.put(fieldName.toLowerCase(), fieldName);
+            }
         }
 
-        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(), null == psiClass ? "" : psiClass.getQualifiedName(), clazzParamName, paramList, paramMtdMap, repair);
+        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(), null == psiClass ? "" : psiClass.getQualifiedName(),
+                clazzParamName,
+                paramList,
+                paramMtdMap,
+                paramNameMap,
+                repair,
+                isUsedLombokBuilder(psiClass));
     }
 
     @Override
@@ -222,8 +234,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         Pattern getM = Pattern.compile(getRegex);
 
         for (PsiClass psi : psiClassLinkList) {
-            List<String> methodsList = getMethods(psi, getRegex, "get");
-            for (String methodName : methodsList) {
+            MethodVO methodVO = getMethods(psi, getRegex, "get");
+            for (String methodName : methodVO.getMethodNameList()) {
                 String param = getM.matcher(methodName).replaceAll("$1").toLowerCase();
                 paramMtdMap.put(param, methodName);
             }
@@ -252,18 +264,54 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
             int lineNumberCurrent = generateContext.getDocument().getLineNumber(generateContext.getOffset()) + 1;
 
-            List<String> setMtdList = setObjConfigDO.getParamList();
-            for (String param : setMtdList) {
-                int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
-
+            /*
+             * 判断是使用了 Lombok Builder 模式
+             * UserDTO userDTO = UserDTO.builder()
+             *              .userId(userVO.getUserId())
+             *              .userName(userVO.getUserName())
+             *              .userAge(userVO.getUserAge())
+             *              .build();
+             */
+            if (setObjConfigDO.isLombokBuilder()) {
+                int finalLineNumberCurrent = lineNumberCurrent;
                 WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                    generateContext.getDocument().insertString(lineStartOffset, blankSpace + setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param) + "(" + (null == getObjConfigDO.getParamMtdMap().get(param) ? "" : getObjConfigDO.getClazzParam() + "." + getObjConfigDO.getParamMtdMap().get(param) + "()") + ");\n");
+                    String clazzName = setObjConfigDO.getClazzName();
+                    String clazzParam = setObjConfigDO.getClazzParamName();
+                    int lineEndOffset = generateContext.getDocument().getLineEndOffset(finalLineNumberCurrent - 1);
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1);
+                    generateContext.getDocument().deleteString(lineStartOffset, lineEndOffset);
+                    generateContext.getDocument().insertString(generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1), blankSpace + clazzName + " " + clazzParam + " = " + setObjConfigDO.getClazzName() + ".builder()");
+                });
+
+                List<String> setMtdList = setObjConfigDO.getParamList();
+                for (String param : setMtdList) {
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                    WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                        String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigDO.getParamNameMap().get(param) + "(" + (null == getObjConfigDO.getParamMtdMap().get(param) ? "" : getObjConfigDO.getClazzParam() + "." + getObjConfigDO.getParamMtdMap().get(param) + "()") + ")";
+                        generateContext.getDocument().insertString(lineStartOffset, builderMethod + "\n");
+                        generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                        generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                    });
+                }
+
+                int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent);
+                WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                    generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
                     generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
                     generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                 });
 
+            } else {
+                List<String> setMtdList = setObjConfigDO.getParamList();
+                for (String param : setMtdList) {
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                    WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param) + "(" + (null == getObjConfigDO.getParamMtdMap().get(param) ? "" : getObjConfigDO.getClazzParam() + "." + getObjConfigDO.getParamMtdMap().get(param) + "()") + ");\n");
+                        generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                        generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                    });
+                }
             }
-
         });
 
     }

@@ -3,6 +3,7 @@ package cn.bugstack.guide.idea.plugin.domain.service;
 import cn.bugstack.guide.idea.plugin.application.IGenerateVo2Dto;
 import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
 import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
+import cn.bugstack.guide.idea.plugin.domain.model.MethodVO;
 import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -64,53 +65,64 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         return psiClassList;
     }
 
-    protected List<String> getMethods(PsiClass psiClass, String regex, String typeStr) {
-        PsiMethod[] methods = psiClass.getMethods();
-        List<String> methodList = new ArrayList<>();
+    protected MethodVO getMethods(PsiClass psiClass, String regex, String typeStr) {
+        PsiMethod[] psiMethods = psiClass.getMethods();
+        List<String> fieldNameList = new ArrayList<>();
+        List<String> methodNameList = new ArrayList<>();
+
+        PsiField[] psiFields = psiClass.getFields();
+        for (PsiField field : psiFields) {
+            fieldNameList.add(field.getName());
+        }
 
         // 判断使用了 lombok，需要补全生成 get、set
-        if (isUsedLombok(psiClass)) {
+        if (isUsedLombokData(psiClass)) {
             Pattern p = Pattern.compile("static.*?final|final.*?static");
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
                 String fieldVal = Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText();
                 // serialVersionUID 判断
-                if (fieldVal.contains("serialVersionUID")){
+                if (fieldVal.contains("serialVersionUID")) {
                     continue;
                 }
                 // static final 常量判断过滤
                 Matcher matcher = p.matcher(fieldVal);
-                if (matcher.find()){
+                if (matcher.find()) {
                     continue;
                 }
                 String name = psiField.getNameIdentifier().getText();
-                methodList.add(typeStr + name.substring(0, 1).toUpperCase() + name.substring(1));
+                methodNameList.add(typeStr + name.substring(0, 1).toUpperCase() + name.substring(1));
+                fieldNameList.add(name);
             }
 
-            for (PsiMethod method : methods) {
+            for (PsiMethod method : psiMethods) {
                 String methodName = method.getName();
-                if (Pattern.matches(regex, methodName) && !methodList.contains(methodName)) {
-                    methodList.add(methodName);
+                if (Pattern.matches(regex, methodName) && !methodNameList.contains(methodName)) {
+                    methodNameList.add(methodName);
                 }
             }
 
-            return methodList;
+            return new MethodVO(fieldNameList, methodNameList);
         }
 
 
         // 正常创建的get、set，直接获取即可
-        for (PsiMethod method : methods) {
+        for (PsiMethod method : psiMethods) {
             String methodName = method.getName();
             if (Pattern.matches(regex, methodName)) {
-                methodList.add(methodName);
+                methodNameList.add(methodName);
             }
         }
 
-        return methodList;
+        return new MethodVO(fieldNameList, methodNameList);
     }
 
-    private boolean isUsedLombok(PsiClass psiClass) {
+    protected boolean isUsedLombokData(PsiClass psiClass) {
         return null != psiClass.getAnnotation("lombok.Data");
+    }
+
+    protected boolean isUsedLombokBuilder(PsiClass psiClass) {
+        return null != psiClass.getAnnotation("lombok.Builder");
     }
 
     protected List<String> getImportList(String docText) {
@@ -118,7 +130,7 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         Pattern p = Pattern.compile("import(.*?);");
         Matcher m = p.matcher(docText);
         while (m.find()) {
-            String val = m.group(1).replaceAll(" ","");
+            String val = m.group(1).replaceAll(" ", "");
             list.add(val.substring(0, val.lastIndexOf(".")));
         }
         return list;
