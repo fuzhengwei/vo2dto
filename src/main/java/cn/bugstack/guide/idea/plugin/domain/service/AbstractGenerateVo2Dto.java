@@ -8,6 +8,7 @@ import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 
 import java.util.ArrayList;
@@ -80,7 +81,9 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
             Pattern p = Pattern.compile("static.*?final|final.*?static");
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
-                String fieldVal = Objects.requireNonNull(psiField.getNameIdentifier().getContext()).getText();
+                PsiElement context = psiField.getNameIdentifier().getContext();
+                if (null == context) continue;
+                String fieldVal = context.getText();
                 // serialVersionUID 判断
                 if (fieldVal.contains("serialVersionUID")) {
                     continue;
@@ -101,6 +104,8 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
                     methodNameList.add(methodName);
                 }
             }
+
+            Messages.showErrorDialog(""+fieldNameList.size(),"");
 
             return new MethodVO(fieldNameList, methodNameList);
         }

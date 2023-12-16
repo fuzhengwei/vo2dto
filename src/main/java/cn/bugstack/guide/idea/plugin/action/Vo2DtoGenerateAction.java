@@ -18,7 +18,7 @@ public class Vo2DtoGenerateAction extends AnAction {
             // 织入代码
             generateVo2Dto.doGenerate(event.getProject(), event.getDataContext(), event.getData(LangDataKeys.PSI_FILE));
         } catch (Exception e) {
-            Messages.showErrorDialog(event.getProject(), "请按规：先复制对象后，例如：A a，再光标放到需要织入的对象上，例如：B b！", "错误提示");
+            Messages.showErrorDialog(event.getProject(), "请按规：先复制对象后，例如：A a，再光标放到需要织入的对象上，例如：B b！联系作者：小傅哥 微信：fustack", "错误提示");
         }
     }
 

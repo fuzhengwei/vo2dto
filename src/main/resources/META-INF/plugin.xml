@@ -84,6 +84,10 @@
       <ul>
           <li>lombok builder</li>
       </ul>
+      <h3>V2.5.0</h3>
+      <ul>
+          <li>fix Objects.requireNonNull</li>
+      </ul>
     ]]>
     </change-notes>
 
