@@ -38,6 +38,7 @@
 3. 支持类继承类，全量的对象转换操作
 4. 含记忆功能的弹窗选择映射关系，支持全量对象、支持匹配对象、也支持空转换，生成一组set但无get的对象
 5. 支持对于引入不同包下的同名类处理
+6. 支持 Lombok.Builder 模式创建转换对象
 
 ## 🔨 使用
 
@@ -60,7 +61,7 @@
 
 ### 2. 手动安装
 
-- 下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.0](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.0)
+- 下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.1](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.1)
 - 安装：
 
 | IDEA Plugin 手动安装，导入下载包|
