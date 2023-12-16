@@ -89,37 +89,106 @@ public class ConvertSettingSupport {
 
             int lineNumberCurrent = generateContext.getDocument().getLineNumber(generateContext.getOffset()) + 1;
 
-            // setNullRadioButton -> 全部清空，则默认生成空转换
-            if ("setNullRadioButton".equals(state.getSelectRadio())) {
-                List<String> setMtdList = setObjConfigDO.getParamList();
-                for (String param : setMtdList) {
-                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+            // 判断是否使用了 Lombok 标签的 Builder 且开启了使用 Lombok Builder
+            if (setObjConfigDO.isLombokBuilder() && state.isUsedLombokBuilder()) {
+                /*
+                 * 判断是使用了 Lombok Builder 模式
+                 * UserDTO userDTO = UserDTO.builder()
+                 *              .userId(userVO.getUserId())
+                 *              .userName(userVO.getUserName())
+                 *              .userAge(userVO.getUserAge())
+                 *              .build();
+                 */
+                int finalLineNumberCurrent = lineNumberCurrent;
+                WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                    String clazzName = setObjConfigDO.getClazzName();
+                    String clazzParam = setObjConfigDO.getClazzParamName();
+                    int lineEndOffset = generateContext.getDocument().getLineEndOffset(finalLineNumberCurrent - 1);
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1);
+                    generateContext.getDocument().deleteString(lineStartOffset, lineEndOffset);
+                    generateContext.getDocument().insertString(generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1), blankSpace + clazzName + " " + clazzParam + " = " + setObjConfigDO.getClazzName() + ".builder()");
+                });
 
+                // setNullRadioButton -> 全部清空，则默认生成空转换
+                if ("setNullRadioButton".equals(state.getSelectRadio())) {
+                    List<String> setMtdList = setObjConfigDO.getParamList();
+                    for (String param : setMtdList) {
+                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigDO.getParamNameMap().get(param) + "()";
+                            generateContext.getDocument().insertString(lineStartOffset, builderMethod + "\n");
+                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                        });
+                    }
+
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent);
                     WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param) + "();\n");
+                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
                         generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
                         generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                     });
+                } else {
+                    // selectAllRadioButton、selectExistRadioButton -> 按照选择进行转换插入
+                    int rowCount = convertTable.getRowCount();
+                    for (int idx = 0; idx < rowCount; idx++) {
+                        boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
+                        if (!isSelected) continue;
 
+                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                        Object setVal = convertTable.getValueAt(idx, 1);
+                        Object getVal = convertTable.getValueAt(idx, 2);
+
+                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                            String setValParam = setVal.toString().substring(setVal.toString().indexOf("set") + 3).toLowerCase();
+                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigDO.getParamNameMap().get(setValParam) + "(" + (null == getVal ? "" : getVal + "()") + ")";
+
+                            generateContext.getDocument().insertString(lineStartOffset, builderMethod + "\n");
+                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                        });
+                    }
                 }
-                return;
-            }
 
-            // selectAllRadioButton、selectExistRadioButton -> 按照选择进行转换插入
-            int rowCount = convertTable.getRowCount();
-            for (int idx = 0; idx < rowCount; idx++) {
-                boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
-                if (!isSelected) continue;
-
-                int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
-                Object setVal = convertTable.getValueAt(idx, 1);
-                Object getVal = convertTable.getValueAt(idx, 2);
-
+                int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent);
                 WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                    generateContext.getDocument().insertString(lineStartOffset, blankSpace + setVal.toString() + "(" + (null == getVal ? "" : getVal + "()") + ");\n");
+                    generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
                     generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
                     generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                 });
+            } else {
+                // setNullRadioButton -> 全部清空，则默认生成空转换
+                if ("setNullRadioButton".equals(state.getSelectRadio())) {
+                    List<String> setMtdList = setObjConfigDO.getParamList();
+                    for (String param : setMtdList) {
+                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+
+                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                            generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param) + "();\n");
+                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                        });
+
+                    }
+                    return;
+                }
+
+                // selectAllRadioButton、selectExistRadioButton -> 按照选择进行转换插入
+                int rowCount = convertTable.getRowCount();
+                for (int idx = 0; idx < rowCount; idx++) {
+                    boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
+                    if (!isSelected) continue;
+
+                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                    Object setVal = convertTable.getValueAt(idx, 1);
+                    Object getVal = convertTable.getValueAt(idx, 2);
+
+                    WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + setVal.toString() + "(" + (null == getVal ? "" : getVal + "()") + ");\n");
+                        generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                        generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                    });
+                }
             }
 
         });

@@ -45,6 +45,8 @@ public class DataSetting implements PersistentStateComponent<DataSetting.DataSta
 
         private String configRadio = "show";
 
+        private boolean isUsedLombokBuilder = true;
+
         public String getSelectRadio() {
             return selectRadio;
         }
@@ -60,6 +62,15 @@ public class DataSetting implements PersistentStateComponent<DataSetting.DataSta
         public void setConfigRadio(String configRadio) {
             this.configRadio = configRadio;
         }
+
+        public boolean isUsedLombokBuilder() {
+            return isUsedLombokBuilder;
+        }
+
+        public void setUsedLombokBuilder(boolean isUsedLombokBuilder) {
+            this.isUsedLombokBuilder = isUsedLombokBuilder;
+        }
+
     }
 
 }

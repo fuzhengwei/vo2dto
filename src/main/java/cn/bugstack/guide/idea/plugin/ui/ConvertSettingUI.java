@@ -7,18 +7,12 @@ import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,6 +33,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JRadioButton selectExistRadioButton;
     private JRadioButton selectNullRadioButton;
     private JRadioButton setNullRadioButton;
+    private JCheckBox isUsedLombokBuilder;
 
     public ConvertSettingUI(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
         super(project, generateContext, setObjConfigDO, getObjConfigDO);
@@ -75,6 +70,13 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
                 int rowIdx = convertTable.rowAtPoint(e.getPoint());
                 Boolean isCheck = (Boolean) convertTable.getValueAt(rowIdx, 0);
                 convertTable.setValueAt(!isCheck, rowIdx, 0);
+            }
+        });
+
+        isUsedLombokBuilder.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                state.setUsedLombokBuilder(isUsedLombokBuilder.isSelected());
             }
         });
 
@@ -119,6 +121,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     }
 
     private void initSelectConfig(DataSetting.DataState state) {
+        isUsedLombokBuilder.setSelected(state.isUsedLombokBuilder());
         switch (state.getSelectRadio()) {
             case "selectAllRadioButton":
                 selectAllRadioButton.setSelected(true);
