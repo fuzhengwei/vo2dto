@@ -105,8 +105,6 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
                 }
             }
 
-            Messages.showErrorDialog(""+fieldNameList.size(),"");
-
             return new MethodVO(fieldNameList, methodNameList);
         }
 
