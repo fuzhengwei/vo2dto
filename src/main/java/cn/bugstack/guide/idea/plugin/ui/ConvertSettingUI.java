@@ -31,6 +31,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JLabel fromLabelVal;
     private JRadioButton selectAllRadioButton;
     private JRadioButton selectExistRadioButton;
+    private JRadioButton selectNotExistRadioButton;
     private JRadioButton selectNullRadioButton;
     private JRadioButton setNullRadioButton;
     private JCheckBox isUsedLombokBuilder;
@@ -44,6 +45,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         buttonGroup.add(selectAllRadioButton);
         buttonGroup.add(selectExistRadioButton);
         buttonGroup.add(selectNullRadioButton);
+        buttonGroup.add(selectNotExistRadioButton);
         buttonGroup.add(setNullRadioButton);
 
         // 转换类名
@@ -105,6 +107,13 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
             state.setSelectRadio("selectExistRadioButton");
         });
 
+        // 选择A存在的B不存在的
+        selectNotExistRadioButton.addActionListener(e -> {
+            convertTable.clearSelection();
+            setNotExistRowSelectData();
+            state.setSelectRadio("selectNotExistRadioButton");
+        });
+
         // 清空选择
         selectNullRadioButton.addActionListener(e -> {
             convertTable.clearSelection();
@@ -135,6 +144,11 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
                 setRowSelectData();
                 selectExistRadioButton.setSelected(true);
                 break;
+            case "selectNotExistRadioButton":
+                convertTable.clearSelection();
+                setNotExistRowSelectData();
+                selectNotExistRadioButton.setSelected(true);
+                break;
             case "selectNullRadioButton":
                 clearJCheckBoxSelection();
                 selectNullRadioButton.setSelected(true);
@@ -160,6 +174,18 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
             Object setVal = convertTable.getValueAt(i, 1);
             Object getVal = convertTable.getValueAt(i, 2);
             if (null != setVal && null != getVal) {
+                convertTable.setValueAt(true, i, 0);
+            }
+        }
+    }
+
+    private void setNotExistRowSelectData() {
+        clearJCheckBoxSelection();
+        int rowCount = convertTable.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            Object setVal = convertTable.getValueAt(i, 1);
+            Object getVal = convertTable.getValueAt(i, 2);
+            if (null != setVal && null == getVal) {
                 convertTable.setValueAt(true, i, 0);
             }
         }
