@@ -51,6 +51,65 @@
 |:---:|
 | ![](/docs/_media/use-demo.png) |
 
+<details><summary><a>👉示例代码 - 可直接复制验证</a></summary></br>
+
+```java
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+public class ApiTest {
+
+    public void test_vo2dto(UserVO user) {
+        UserDTO userDTO = UserDTO.builder()
+                .userId(user.getUserId())
+                .userNickName(user.getUserNickName())
+                .userHead(user.getUserHead())
+                .build();
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class UserDTO {
+
+        private String userId;
+        private String userIdx;
+        private String userNickName;
+        private String userHead;
+        private int page;
+        private int rows;
+
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class UserVO {
+
+        private Long id;
+        private String userId;
+        private String userNickName;
+        private String userHead;
+        private String userPassword;
+        private Date createTime;
+        private Date updateTime;
+
+    }
+
+}
+```
+
+- 支持 UserDTO userDTO = new UserDTO() 模型的，x.set(y.get)
+- 支持 UserDTO userDTO 模式的，z.builder().x(y.get)
+
+</details>
+
 ## 🛠️ 安装
 
 ### 1. 在线安装
