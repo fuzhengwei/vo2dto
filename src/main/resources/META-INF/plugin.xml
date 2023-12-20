@@ -3,7 +3,8 @@
     <name>vo2dto</name>
     <vendor email="184172133@qq.com" url="https://bugstack.cn">小傅哥</vendor>
 
-    <description><![CDATA[
+    <description>
+        <![CDATA[
       一款用于帮助使用 IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具.
       <br/>Github：<a href="https://github.com/fuzhengwei/vo2dto">https://github.com/fuzhengwei/vo2dto</a>
       <br/>YouTube：<a href="https://youtu.be/HOlNi2b0oXI">https://youtu.be/HOlNi2b0oXI</a>
@@ -17,11 +18,65 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <h3>V2.1.0</h3>
+      <h3>V2.5.2</h3>
       <ul>
-          <li>Copy object a and generate x.set (y.get) on object B </li>
-          <li>On the object B attribute, you can also directly click to generate x.set (y.get) </li>
-          <li>Supports methods for generating parent objects</li>
+          <li>fix UserDTO userDTO; 修复结尾分号不识别问题</li>
+          <li>feat 增加差级选择 @Swiftlyfisher</li>
+      </ul>
+      <h3>V2.5.1</h3>
+      <ul>
+          <li>fix Objects.requireNonNull</li>
+      </ul>
+      <h3>V2.4.9</h3>
+      <ul>
+          <li>lombok builder</li>
+      </ul>
+      <h3>V2.4.8</h3>
+      <ul>
+          <li>Static final constant judgment filtering</li>
+      </ul>
+      <h3>V2.4.7</h3>
+      <ul>
+          <li>Conversion object attribute value search</li>
+          <li>fix copy Object in globalSearch by all scope</li>
+      </ul>
+      <h3>V2.4.6</h3>
+      <ul>
+          <li>If it is a field of final type, it will not be processed</li>
+          <li>copy Object in globalSearch by all scope</li>
+      </ul>
+      <h3>V2.4.5</h3>
+      <ul>
+          <li>fix Support to find similar names under multiple packages</li>
+      </ul>
+      <h3>V2.4.4</h3>
+      <ul>
+          <li>Support to find similar names under multiple packages</li>
+      </ul>
+      <h3>V2.4.3</h3>
+      <ul>
+          <li>verify the context of the copied object and find the matching class</li>
+      </ul>
+      <h3>V2.4.2</h3>
+      <ul>
+          <li>feat table check box</li>
+      </ul>
+      <h3>V2.4.1</h3>
+      <ul>
+          <li>fix tool config vo2dto</li>
+      </ul>
+      <h3>V2.4.0</h3>
+      <ul>
+          <li>Optimize selection mapping relationship</li>
+          <li>Provide form presentation configuration</li>
+      </ul>
+      <h3>V2.3.0</h3>
+      <ul>
+          <li>Vo2Dto Convert Settings UI</li>
+      </ul>
+      <h3>V2.2.2</h3>
+      <ul>
+          <li>Compatible method repair</li>
       </ul>
       <h3>V2.2.0</h3>
       <ul>
@@ -29,60 +84,11 @@
           <li>Object null conversion is supported</li>
           <li>Add custom get and set methods in compatible Lombok</li>
       </ul>
-      <h3>V2.2.2</h3>
+      <h3>V2.1.0</h3>
       <ul>
-          <li>Compatible method repair</li>
-      </ul>
-      <h3>V2.3.0</h3>
-      <ul>
-          <li>Vo2Dto Convert Settings UI</li>
-      </ul>
-      <h3>V2.4.0</h3>
-      <ul>
-          <li>Optimize selection mapping relationship</li>
-          <li>Provide form presentation configuration</li>
-      </ul>
-      <h3>V2.4.1</h3>
-      <ul>
-          <li>fix tool config vo2dto</li>
-      </ul>
-      <h3>V2.4.2</h3>
-      <ul>
-          <li>feat table check box</li>
-      </ul>
-      <h3>V2.4.3</h3>
-      <ul>
-          <li>verify the context of the copied object and find the matching class</li>
-      </ul>
-      <h3>V2.4.4</h3>
-      <ul>
-          <li>Support to find similar names under multiple packages</li>
-      </ul>
-      <h3>V2.4.5</h3>
-      <ul>
-          <li>fix Support to find similar names under multiple packages</li>
-      </ul>
-      <h3>V2.4.6</h3>
-      <ul>
-          <li>If it is a field of final type, it will not be processed</li>
-          <li>copy Object in globalSearch by all scope</li>
-      </ul>
-      <h3>V2.4.7</h3>
-      <ul>
-          <li>Conversion object attribute value search</li>
-          <li>fix copy Object in globalSearch by all scope</li>
-      </ul>
-      <h3>V2.4.8</h3>
-      <ul>
-          <li>Static final constant judgment filtering</li>
-      </ul>
-      <h3>V2.4.9</h3>
-      <ul>
-          <li>lombok builder</li>
-      </ul>
-      <h3>V2.5.1</h3>
-      <ul>
-          <li>fix Objects.requireNonNull</li>
+          <li>Copy object a and generate x.set (y.get) on object B </li>
+          <li>On the object B attribute, you can also directly click to generate x.set (y.get) </li>
+          <li>Supports methods for generating parent objects</li>
       </ul>
     ]]>
     </change-notes>

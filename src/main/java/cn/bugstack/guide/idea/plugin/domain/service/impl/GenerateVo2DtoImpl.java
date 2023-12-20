@@ -100,7 +100,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             int offsetStep = generateContext.getOffset() - 1;
 
             PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
-            while (null == elementAt || elementAt.getText().equals(clazzParamName) || elementAt instanceof PsiWhiteSpace) {
+            while (null == elementAt || elementAt.getText().equals(clazzParamName) || elementAt.getText().equals(";") || elementAt instanceof PsiWhiteSpace) {
                 elementAt = psiFile.findElementAt(--offsetStep);
                 if (elementAt instanceof PsiWhiteSpace) {
                     ++repair;
