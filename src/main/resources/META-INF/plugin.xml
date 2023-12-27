@@ -20,7 +20,7 @@
       <b>中文介绍</b>
       <ul>
           <li>1. 先复制对象，例如：A a，然后将光标放在要编织的对象上，例如：B b = new B()</li>
-          <li>2. 鼠标定位到 B b 以后，Ctrl/Command + N 选择 Vo2Dto 如界面操作按需选择</li>
+          <li>2. 鼠标定位到 B b 以后，Mac「Ctrl + N」 Windows「alt+ insert」 选择 Vo2Dto 如界面操作按需选择</li>
           <li>3. 如果你在对象上使用了 Lombok Builder 注解，那么可以生成 Builder 模式对象</li>
       </ul>
 
