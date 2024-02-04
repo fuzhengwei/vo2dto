@@ -7,6 +7,10 @@ import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.TableSpeedSearch;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.table.JBTable;
+import com.intellij.util.containers.Convertor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +39,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JRadioButton selectNullRadioButton;
     private JRadioButton setNullRadioButton;
     private JCheckBox isUsedLombokBuilder;
+    private JPanel convertPanel;
 
     public ConvertSettingUI(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
         super(project, generateContext, setObjConfigDO, getObjConfigDO);
@@ -53,7 +58,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         toLabelVal.setText(getToLabelValText());
 
         // 设置元素
-        convertTable.setModel(new DefaultTableModel(getTableData(), getTableTitle()));
+        
 
         TableColumn tc = convertTable.getColumnModel().getColumn(0);
         tc.setCellEditor(convertTable.getDefaultEditor(Boolean.class));
@@ -211,4 +216,11 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         weavingSetGetCode(convertTable);
     }
 
+    private void createUIComponents() {
+        convertTable = new JBTable();
+        convertTable.setModel(new DefaultTableModel(getTableData(), getTableTitle()));
+        TableSpeedSearch tableSpeedSearch = new TableSpeedSearch(convertTable, o -> o == null? "" : o.toString());
+        ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(tableSpeedSearch.getComponent());
+        convertPanel = toolbarDecorator.createPanel();
+    }
 }
