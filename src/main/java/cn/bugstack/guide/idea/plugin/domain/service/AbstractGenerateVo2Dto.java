@@ -73,11 +73,22 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
 
         PsiField[] psiFields = psiClass.getFields();
         for (PsiField field : psiFields) {
+            String fieldName = field.getName();
             fieldNameList.add(field.getName());
+
+            PsiAnnotation getter = field.getAnnotation("lombok.Getter");
+            if (null != getter) {
+                methodNameList.add("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+            }
+
+            PsiAnnotation setter = field.getAnnotation("lombok.Setter");
+            if (null != setter) {
+                methodNameList.add("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+            }
         }
 
         // 判断使用了 lombok，需要补全生成 get、set
-        if (isUsedLombokData(psiClass)) {
+        if (("set".equals(typeStr) && isUsedLombokBuilder(psiClass)) || isUsedLombokData(psiClass) || ("get".equals(typeStr) && isUserLombokGetter(psiClass)) || ("set".equals(typeStr) && isUserLombokSetter(psiClass))) {
             Pattern p = Pattern.compile("static.*?final|final.*?static");
             PsiField[] fields = psiClass.getFields();
             for (PsiField psiField : fields) {
@@ -94,7 +105,10 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
                     continue;
                 }
                 String name = psiField.getNameIdentifier().getText();
-                methodNameList.add(typeStr + name.substring(0, 1).toUpperCase() + name.substring(1));
+                String methodName = typeStr + name.substring(0, 1).toUpperCase() + name.substring(1);
+                if (!methodNameList.contains(methodName)) {
+                    methodNameList.add(methodName);
+                }
                 fieldNameList.add(name);
             }
 
@@ -102,12 +116,22 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
                 String methodName = method.getName();
                 if (Pattern.matches(regex, methodName) && !methodNameList.contains(methodName)) {
                     methodNameList.add(methodName);
+                    continue;
+                }
+
+                PsiAnnotation getter = method.getAnnotation("Getter");
+                if (null != getter) {
+                    methodNameList.add("get" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1));
+                }
+
+                PsiAnnotation setter = method.getAnnotation("Setter");
+                if (null != setter) {
+                    methodNameList.add("set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1));
                 }
             }
 
             return new MethodVO(fieldNameList, methodNameList);
         }
-
 
         // 正常创建的get、set，直接获取即可
         for (PsiMethod method : psiMethods) {
@@ -120,8 +144,17 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
         return new MethodVO(fieldNameList, methodNameList);
     }
 
+
     protected boolean isUsedLombokData(PsiClass psiClass) {
         return null != psiClass.getAnnotation("lombok.Data");
+    }
+
+    protected boolean isUserLombokGetter(PsiClass psiClass) {
+        return null != psiClass.getAnnotation("lombok.Getter");
+    }
+
+    protected boolean isUserLombokSetter(PsiClass psiClass) {
+        return null != psiClass.getAnnotation("lombok.Setter");
     }
 
     protected boolean isUsedLombokBuilder(PsiClass psiClass) {

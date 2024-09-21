@@ -5,7 +5,7 @@ plugins {
 
 group 'cn.bugstack.idea.plugin'
 
-version '2.5.2'
+version '2.5.3'
 
 apply plugin: 'java'
 apply plugin: 'idea'
