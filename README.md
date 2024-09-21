@@ -132,9 +132,10 @@ public class ApiTest {
 - [x]【推荐】v2.5.4 新增Lombok Getter、Setter 检测
 - v2.5.1 修复 Objects.requireNonNull 部分 idea 不支持该方法问题 
 - v2.4.9 支持 Lombok Builder 模式
-- v2.4.8 静态字段过滤
 
 <details><summary><a>👉显示更多</a></summary></br>
+
+- v2.4.8 静态字段过滤
 
 - v2.4.7
 
