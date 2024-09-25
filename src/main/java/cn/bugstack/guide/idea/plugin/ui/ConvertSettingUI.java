@@ -39,7 +39,6 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JRadioButton selectNullRadioButton;
     private JRadioButton setNullRadioButton;
     private JCheckBox isUsedLombokBuilder;
-    private JPanel convertPanel;
 
     public ConvertSettingUI(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
         super(project, generateContext, setObjConfigDO, getObjConfigDO);
@@ -58,7 +57,7 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         toLabelVal.setText(getToLabelValText());
 
         // 设置元素
-        
+        convertTable.setModel(new DefaultTableModel(getTableData(), getTableTitle()));
 
         TableColumn tc = convertTable.getColumnModel().getColumn(0);
         tc.setCellEditor(convertTable.getDefaultEditor(Boolean.class));
@@ -216,11 +215,4 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
         weavingSetGetCode(convertTable);
     }
 
-    private void createUIComponents() {
-        convertTable = new JBTable();
-        convertTable.setModel(new DefaultTableModel(getTableData(), getTableTitle()));
-        TableSpeedSearch tableSpeedSearch = new TableSpeedSearch(convertTable, o -> o == null? "" : o.toString());
-        ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(tableSpeedSearch.getComponent());
-        convertPanel = toolbarDecorator.createPanel();
-    }
 }

@@ -35,7 +35,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <h3>V2.5.3</h3>
+      <h3>V2.5.4</h3>
       <ul>
           <li>fix Getter、Setter 注解检测</li>
           <li>feat 精确定位不到时，尝试直接从本地变量获取dto,入参作为vo。 @wsaaaqqq</li>
