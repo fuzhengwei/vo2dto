@@ -120,7 +120,7 @@ public class ApiTest {
 
 ### 2. 手动安装
 
-- 下载：[https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.1](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.1)
+- 下载：[v2.5.4](https://github.com/fuzhengwei/vo2dto/releases/tag/v2.5.4)
 - 安装：
 
 | IDEA Plugin 手动安装，导入下载包|
