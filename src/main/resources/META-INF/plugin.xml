@@ -5,31 +5,35 @@
 
     <description>
         <![CDATA[
-      一款用于帮助使用 IntelliJ IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具。
+        A plugin tool designed to assist developers using IDEA to quickly generate a large number of 'x.set (y. get)' code blocks required for the conversion process between two objects
       <br/>
       <br/>
 
-      <a href="https://github.com/fuzhengwei/vo2dto">工程源码</a> |
-      <a href="https://github.com/fuzhengwei/vo2dto/wiki">使用文档</a> |
-      <a href="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/use-demo.png">图片教程</a> |
-      <a href="https://www.bilibili.com/video/BV13Y411h7fv">视频教程(BiliBili)</a> |
-      <a href="https://youtu.be/HOlNi2b0oXI">视频教程(youtube)</a>
+      <a href="https://github.com/fuzhengwei/vo2dto">vo2dto</a> |
+      <a href="https://github.com/fuzhengwei/vo2dto/wiki">wiki</a> |
+      <a href="https://github.com/fuzhengwei/vo2dto/blob/master/docs/_media/use-demo.png">img doc</a> |
+      <a href="https://www.bilibili.com/video/BV13Y411h7fv">BiliBili</a> |
+      <a href="https://youtu.be/HOlNi2b0oXI">youtube</a>
 
       <br/>
-      <br/>
-      <b>中文介绍</b>
-      <ul>
-          <li>1. 先复制对象，例如：A a，然后将光标放在要编织的对象上，例如：B b = new B()</li>
-          <li>2. 鼠标定位到 B b 以后，Mac「Ctrl + N」 Windows「alt+ insert」 选择 Vo2Dto 如界面操作按需选择</li>
-          <li>3. 如果你在对象上使用了 Lombok Builder 注解，那么可以生成 Builder 模式对象</li>
-      </ul>
-
       <br/>
       <b>English Introduction</b>
       <ul>
           <li>1. copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, b Generate -> vo2dto</li>
           <li>2. After positioning the mouse to B b, Ctrl/Command + N select Vo2Dto and select as needed according to the interface operation.</li>
           <li>3. If you use the Lombok Builder annotation on the object, you can generate a Builder pattern object</li>
+      </ul>
+
+      <br/>
+      <br/>
+      <b>中文介绍</b>
+      <br/>
+      一款用于帮助使用 IntelliJ IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具。
+      <br/>
+      <ul>
+          <li>1. 先复制对象，例如：A a，然后将光标放在要编织的对象上，例如：B b = new B()</li>
+          <li>2. 鼠标定位到 B b 以后，Mac「Ctrl + N」 Windows「alt+ insert」 选择 Vo2Dto 如界面操作按需选择</li>
+          <li>3. 如果你在对象上使用了 Lombok Builder 注解，那么可以生成 Builder 模式对象</li>
       </ul>
 
     ]]></description>
