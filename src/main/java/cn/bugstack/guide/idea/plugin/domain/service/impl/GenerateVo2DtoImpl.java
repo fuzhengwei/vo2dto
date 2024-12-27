@@ -56,6 +56,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
     protected SetObjConfigDO getSetObjConfigDO(GenerateContext generateContext) {
         int repair = 0;
         PsiClass psiClass = null;
+        StringBuilder setClazzName = new StringBuilder();
         String clazzParamName = null;
         PsiElement psiElement = generateContext.getPsiElement();
 
@@ -67,10 +68,21 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             Editor editor = generateContext.getEditor();
             int offsetStep = generateContext.getOffset() + 1;
             PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
-            while (null == elementAt
-                    || elementAt.getText().equals(psiClass.getName())
-                    || elementAt instanceof PsiWhiteSpace
-                    || elementAt.getText().equals(".")) {
+
+            setClazzName = new StringBuilder(elementAt.getText());
+
+            // 一直循环到第一个空白区
+            while (!(elementAt instanceof PsiWhiteSpace)) {
+                if (elementAt.getText().equals(".")) {
+                    elementAt = psiFile.findElementAt(++offsetStep);
+                    setClazzName.append(".").append(elementAt.getText());
+                }
+
+                elementAt = psiFile.findElementAt(++offsetStep);
+            }
+
+            // 从空白区开始循环找内容
+            while (null == elementAt || elementAt instanceof PsiWhiteSpace) {
                 elementAt = psiFile.findElementAt(++offsetStep);
             }
 
@@ -93,7 +105,6 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         if (psiLocalVariable != null) {
             clazzParamName = psiLocalVariable.getName();
             String clazzName;
-
             // 判断是否有类的内部类 A.B
             String clazzNameStr = psiLocalVariable.getType().getCanonicalText();
             if (clazzNameStr.contains("\\.")) {
@@ -105,7 +116,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                     clazzName = clazzNameStr;
                 }
 
-                psiClass = getPsiClasses(generateContext, clazzNameImport, clazzName);
+                psiClass = getPsiClasses(generateContext, clazzNameImport, clazzName.toString());
             } else {
                 // 通过光标步长递进找到属性名称
                 PsiFile psiFile = generateContext.getPsiFile();
@@ -125,7 +136,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                 clazzName = elementAt.getText();
 
                 PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject())
-                        .getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
+                        .getClassesByName(clazzName.toString(), GlobalSearchScope.allScope(generateContext.getProject()));
                 if (psiClasses.length > 1) {
                     assert elementAt.getContext() != null;
                     String qualifiedName = ((PsiJavaCodeReferenceElementImpl) elementAt.getContext()).getQualifiedName();
@@ -166,7 +177,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             }
         }
 
-        return new SetObjConfigDO(null == psiLocalVariable ? "" : psiLocalVariable.getType().getCanonicalText(),
+        // null == psiLocalVariable 不为空则为光标定位到属性上
+        return new SetObjConfigDO(null == psiLocalVariable ? setClazzName.toString() : psiLocalVariable.getType().getCanonicalText(),
                 null == psiClass ? "" : psiClass.getQualifiedName(),
                 clazzParamName,
                 paramList,
@@ -178,7 +190,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
     @Override
     protected GetObjConfigDO getObjConfigDOByClipboardText(GenerateContext generateContext) {
-        // 获取剪切板信息 【实际使用可补充一些必要的参数判断】
+        // 获取剪切板信息
         String systemClipboardText = Utils.getSystemClipboardText().trim();
         // 按照默认规则提取信息，例如：UserDto userDto
         String[] split = systemClipboardText.split("\\s");
