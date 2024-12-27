@@ -71,6 +71,13 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
             setClazzName = new StringBuilder(elementAt.getText());
 
+            // 做循环补充，一直找到空格位置
+            while (!(elementAt instanceof PsiWhiteSpace)) {
+                elementAt = psiFile.findElementAt(--offsetStep);
+            }
+
+            elementAt = psiFile.findElementAt(++offsetStep);
+
             // 一直循环到第一个空白区
             while (!(elementAt instanceof PsiWhiteSpace)) {
                 if (elementAt.getText().equals(".")) {
