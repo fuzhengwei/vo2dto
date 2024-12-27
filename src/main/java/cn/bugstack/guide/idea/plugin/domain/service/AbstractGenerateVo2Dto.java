@@ -10,6 +10,9 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.PsiJavaFileImpl;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiShortNamesCache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,6 +173,44 @@ public abstract class AbstractGenerateVo2Dto implements IGenerateVo2Dto {
             list.add(val.substring(0, val.lastIndexOf(".")));
         }
         return list;
+    }
+
+    protected PsiClass getPsiClasses(GenerateContext generateContext, String clazzNameImport, String clazzName) {
+        PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject())
+                .getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
+
+        if (psiClasses.length == 1) return psiClasses[0];
+
+        // 获取比对包文本
+        List<String> importList;
+        if (!"".equals(clazzNameImport)) {
+            importList = Collections.singletonList(clazzNameImport);
+        } else {
+            importList = getImportList(generateContext.getDocument().getText());
+        }
+        // 循环比对，通过引入的包名与类做包名做对比
+        for (PsiClass psiClazz : psiClasses) {
+            String qualifiedName = Objects.requireNonNull(psiClazz.getQualifiedName());
+            int idx = qualifiedName.lastIndexOf(".");
+            if (idx < 0) break;
+            String packageName = qualifiedName.substring(0, idx);
+            if (importList.contains(qualifiedName) || importList.contains(packageName)) {
+                return psiClazz;
+            }
+        }
+        // 同包下比对
+        String psiFilePackageName = ((PsiJavaFileImpl) generateContext.getPsiFile()).getPackageName();
+        for (PsiClass psiClazz : psiClasses) {
+            String qualifiedName = Objects.requireNonNull(psiClazz.getQualifiedName());
+            int idx = qualifiedName.lastIndexOf(".");
+            if (idx < 0) break;
+            String packageName = qualifiedName.substring(0, idx);
+            if (importList.contains(qualifiedName) ||psiFilePackageName.equals(packageName)) {
+                return psiClazz;
+            }
+        }
+
+        return psiClasses[0];
     }
 
 }

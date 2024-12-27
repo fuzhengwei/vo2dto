@@ -58,7 +58,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         PsiClass psiClass = null;
         String clazzParamName = null;
         PsiElement psiElement = generateContext.getPsiElement();
-        // 鼠标定位到类
+
+        // 鼠标定位到「类上」
         if (psiElement instanceof PsiClass) {
             psiClass = (PsiClass) generateContext.getPsiElement();
             // 通过光标步长递进找到属性名称
@@ -68,13 +69,16 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
             PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
             while (null == elementAt
                     || elementAt.getText().equals(psiClass.getName())
-                    || elementAt instanceof PsiWhiteSpace) {
+                    || elementAt instanceof PsiWhiteSpace
+                    || elementAt.getText().equals(".")) {
                 elementAt = psiFile.findElementAt(++offsetStep);
             }
+
             // 最终拿到属性名称
             clazzParamName = elementAt.getText();
         }
-        // 鼠标定位到属性
+
+        // 鼠标定位到「属性」
         PsiLocalVariable psiLocalVariable = null;
         if (psiElement instanceof PsiLocalVariable) {
             psiLocalVariable = (PsiLocalVariable) psiElement;
@@ -85,42 +89,63 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                     .findAny()
                     .orElse(null);
         }
+
         if (psiLocalVariable != null) {
             clazzParamName = psiLocalVariable.getName();
-            // 通过光标步长递进找到属性名称
-            PsiFile psiFile = generateContext.getPsiFile();
-            Editor editor = generateContext.getEditor();
-            int offsetStep = ((PsiLocalVariableImpl) psiLocalVariable).getStartOffset() + 1;
-            PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
-            while (null == elementAt
-                    || elementAt.getText().equals(clazzParamName)
-                    || elementAt.getText().equals(";")
-                    || elementAt instanceof PsiWhiteSpace) {
-                elementAt = psiFile.findElementAt(--offsetStep);
-                if (elementAt instanceof PsiWhiteSpace) {
-                    ++repair;
+            String clazzName;
+
+            // 判断是否有类的内部类 A.B
+            String clazzNameStr = psiLocalVariable.getType().getCanonicalText();
+            if (clazzNameStr.contains("\\.")) {
+                String clazzNameImport = clazzNameStr;
+                if (clazzNameStr.indexOf(".") > 0) {
+                    clazzName = clazzNameStr.substring(clazzNameStr.lastIndexOf(".") + 1);
+                    clazzNameImport = clazzNameStr;
+                } else {
+                    clazzName = clazzNameStr;
                 }
-            }
-            String clazzName = elementAt.getText();
-            PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject())
-                    .getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
-            if (psiClasses.length > 1) {
-                assert elementAt.getContext() != null;
-                String qualifiedName = ((PsiJavaCodeReferenceElementImpl) elementAt.getContext()).getQualifiedName();
-                for (PsiClass clazz : psiClasses) {
-                    if (Objects.equals(clazz.getQualifiedName(), qualifiedName)) {
-                        psiClass = clazz;
-                        break;
+
+                psiClass = getPsiClasses(generateContext, clazzNameImport, clazzName);
+            } else {
+                // 通过光标步长递进找到属性名称
+                PsiFile psiFile = generateContext.getPsiFile();
+                Editor editor = generateContext.getEditor();
+                int offsetStep = ((PsiLocalVariableImpl) psiLocalVariable).getStartOffset() + 1;
+                PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
+                while (null == elementAt
+                        || elementAt.getText().equals(clazzParamName)
+                        || elementAt.getText().equals(";")
+                        || elementAt instanceof PsiWhiteSpace) {
+                    elementAt = psiFile.findElementAt(--offsetStep);
+                    if (elementAt instanceof PsiWhiteSpace) {
+                        ++repair;
                     }
                 }
-            } else {
-                psiClass = psiClasses[0];
+
+                clazzName = elementAt.getText();
+
+                PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject())
+                        .getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
+                if (psiClasses.length > 1) {
+                    assert elementAt.getContext() != null;
+                    String qualifiedName = ((PsiJavaCodeReferenceElementImpl) elementAt.getContext()).getQualifiedName();
+                    for (PsiClass clazz : psiClasses) {
+                        if (Objects.equals(clazz.getQualifiedName(), qualifiedName)) {
+                            psiClass = clazz;
+                            break;
+                        }
+                    }
+                } else {
+                    psiClass = psiClasses[0];
+                }
+                if (null == psiClass) {
+                    psiClass = psiClasses[0];
+                }
             }
-            if (null == psiClass) {
-                psiClass = psiClasses[0];
-            }
+
             repair += Objects.requireNonNull(psiClass.getName()).length();
         }
+
         // 获取类的set方法并存放起来
         Pattern setMtd = Pattern.compile(setRegex);
         List<String> paramList = new ArrayList<>();
@@ -140,7 +165,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                 paramNameMap.put(fieldName.toLowerCase(), fieldName);
             }
         }
-        return new SetObjConfigDO(null == psiClass ? "" : psiClass.getName(),
+
+        return new SetObjConfigDO(null == psiLocalVariable ? "" : psiLocalVariable.getType().getCanonicalText(),
                 null == psiClass ? "" : psiClass.getQualifiedName(),
                 clazzParamName,
                 paramList,
@@ -179,45 +205,10 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
         } else {
             clazzName = split[0].trim();
         }
-        // 获取同名类集合
-        PsiClass[] psiClasses = PsiShortNamesCache.getInstance(generateContext.getProject())
-                .getClassesByName(clazzName, GlobalSearchScope.allScope(generateContext.getProject()));
+
         // 上下文检测，找到符合的复制类
-        PsiClass psiContextClass = null;
-        // 相同类名处理
-        if (psiClasses.length > 1) {
-            // 获取比对包文本
-            List<String> importList;
-            if (!"".equals(clazzNameImport)) {
-                importList = Collections.singletonList(clazzNameImport);
-            } else {
-                importList = getImportList(generateContext.getDocument().getText());
-            }
-            // 循环比对，通过引入的包名与类做包名做对比
-            for (PsiClass psiClass : psiClasses) {
-                String qualifiedName = Objects.requireNonNull(psiClass.getQualifiedName());
-                String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
-                if (importList.contains(packageName)) {
-                    psiContextClass = psiClass;
-                    break;
-                }
-            }
-            // 同包下比对
-            if (null == psiContextClass) {
-                String psiFilePackageName = ((PsiJavaFileImpl) generateContext.getPsiFile()).getPackageName();
-                for (PsiClass psiClass : psiClasses) {
-                    String qualifiedName = Objects.requireNonNull(psiClass.getQualifiedName());
-                    String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
-                    if (psiFilePackageName.equals(packageName)) {
-                        psiContextClass = psiClass;
-                        break;
-                    }
-                }
-            }
-        }
-        if (null == psiContextClass) {
-            psiContextClass = psiClasses[0];
-        }
+        PsiClass psiContextClass = getPsiClasses(generateContext, clazzNameImport, clazzName);
+
         List<PsiClass> psiClassLinkList = getPsiClassLinkList(psiContextClass);
         Map<String, String> paramMtdMap = new HashMap<>();
         Pattern getM = Pattern.compile(getRegex);
@@ -233,9 +224,9 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
     @Override
     protected void convertSetting(Project project,
-            GenerateContext generateContext,
-            SetObjConfigDO setObjConfigDO,
-            GetObjConfigDO getObjConfigDO) {
+                                  GenerateContext generateContext,
+                                  SetObjConfigDO setObjConfigDO,
+                                  GetObjConfigDO getObjConfigDO) {
         ShowSettingsUtil.getInstance()
                 .editConfigurable(project,
                         new ConvertSettingUI(project, generateContext, setObjConfigDO, getObjConfigDO));
@@ -243,8 +234,8 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
 
     @Override
     protected void weavingSetGetCode(GenerateContext generateContext,
-            SetObjConfigDO setObjConfigDO,
-            GetObjConfigDO getObjConfigDO) {
+                                     SetObjConfigDO setObjConfigDO,
+                                     GetObjConfigDO getObjConfigDO) {
         Application application = ApplicationManager.getApplication();
         // 获取空格位置长度
         int distance = Utils.getWordStartOffset(generateContext.getEditorText(), generateContext.getOffset())
