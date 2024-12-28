@@ -19,8 +19,8 @@
       <br/>
       <b>English Introduction</b>
       <ul>
-          <li>1. copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, b Generate -> vo2dto</li>
-          <li>2. After positioning the mouse to B b, Ctrl/Command + N select Vo2Dto and select as needed according to the interface operation.</li>
+          <li>1. copy the object first, for example: A, a, and then place the cursor on the object to be woven, for example: B, bbb Generate -> vo2dto</li>
+          <li>2. After positioning the mouse to B b, Mac「Ctrl + N」 Windows「alt+ insert」 select Vo2Dto and select as needed according to the interface operation.</li>
           <li>3. If you use the Lombok Builder annotation on the object, you can generate a Builder pattern object</li>
       </ul>
 
