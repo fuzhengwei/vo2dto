@@ -238,7 +238,7 @@ public class GenerateVo2DtoImpl extends AbstractGenerateVo2Dto {
                                   GetObjConfigDO getObjConfigDO) {
         ShowSettingsUtil.getInstance()
                 .editConfigurable(project,
-                        new ConvertSettingUI(project, generateContext, setObjConfigDO, getObjConfigDO));
+                        new ConvertSettingUI(project, null, null, null));
     }
 
     @Override

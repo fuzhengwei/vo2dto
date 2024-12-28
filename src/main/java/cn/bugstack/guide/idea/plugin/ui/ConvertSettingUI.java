@@ -3,6 +3,7 @@ package cn.bugstack.guide.idea.plugin.ui;
 import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
 import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
 import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
+import cn.bugstack.guide.idea.plugin.domain.service.generate.factory.DefaultGenerateStrategyFactory;
 import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -40,8 +41,11 @@ public class ConvertSettingUI extends ConvertSettingSupport implements Configura
     private JRadioButton setNullRadioButton;
     private JCheckBox isUsedLombokBuilder;
 
-    public ConvertSettingUI(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
-        super(project, generateContext, setObjConfigDO, getObjConfigDO);
+    public ConvertSettingUI(Project project,
+                            DefaultGenerateStrategyFactory.ProjectConfigVO projectConfigVO,
+                            DefaultGenerateStrategyFactory.SetObjConfigVO setObjConfigVO,
+                            DefaultGenerateStrategyFactory.GetObjConfigVO getObjConfigVO) {
+        super(project, projectConfigVO, setObjConfigVO, getObjConfigVO);
         main.setSize(300, 400);
 
         // 添加按钮

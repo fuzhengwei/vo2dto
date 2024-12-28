@@ -1,8 +1,9 @@
 package cn.bugstack.guide.idea.plugin.ui;
 
-import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
-import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
-import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
+//import cn.bugstack.guide.idea.plugin.domain.model.projectConfigVO;
+//import cn.bugstack.guide.idea.plugin.domain.model.getObjConfigVO;
+//import cn.bugstack.guide.idea.plugin.domain.model.setObjConfigVO;
+import cn.bugstack.guide.idea.plugin.domain.service.generate.factory.DefaultGenerateStrategyFactory;
 import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
 import cn.bugstack.guide.idea.plugin.infrastructure.Utils;
 import com.intellij.openapi.application.Application;
@@ -23,24 +24,31 @@ import java.util.List;
  */
 public class ConvertSettingSupport {
 
-    private GenerateContext generateContext;
-    private SetObjConfigDO setObjConfigDO;
-    private GetObjConfigDO getObjConfigDO;
+//    private projectConfigVO projectConfigVO;
+//    private setObjConfigVO setObjConfigVO;
+//    private getObjConfigVO getObjConfigVO;
 
+    private DefaultGenerateStrategyFactory.ProjectConfigVO projectConfigVO;
+    private DefaultGenerateStrategyFactory.SetObjConfigVO setObjConfigVO;
+    private DefaultGenerateStrategyFactory.GetObjConfigVO getObjConfigVO;
+    
     protected DataSetting.DataState state;
 
-    public ConvertSettingSupport(Project project, GenerateContext generateContext, SetObjConfigDO setObjConfigDO, GetObjConfigDO getObjConfigDO) {
+    public ConvertSettingSupport(Project project, 
+                                 DefaultGenerateStrategyFactory.ProjectConfigVO projectConfigVO,
+                                 DefaultGenerateStrategyFactory.SetObjConfigVO setObjConfigVO,
+                                 DefaultGenerateStrategyFactory.GetObjConfigVO getObjConfigVO) {
         // 从数据记录中选择
-        this.generateContext = generateContext;
-        this.setObjConfigDO = setObjConfigDO;
-        this.getObjConfigDO = getObjConfigDO;
+        this.projectConfigVO = projectConfigVO;
+        this.setObjConfigVO = setObjConfigVO;
+        this.getObjConfigVO = getObjConfigVO;
 
         // 配置数据
         state = DataSetting.getInstance(project).getState();
     }
 
     protected String getFromLabelValText() {
-        String qualifiedName = getObjConfigDO.getQualifiedName();
+        String qualifiedName = getObjConfigVO.getQualifiedName();
         if ("".equals(qualifiedName)) {
             return "您尚未复制被转换对象，例如：X x = new X() 需要复制 X x";
         }
@@ -48,7 +56,7 @@ public class ConvertSettingSupport {
     }
 
     protected String getToLabelValText() {
-        String qualifiedName = setObjConfigDO.getQualifiedName();
+        String qualifiedName = setObjConfigVO.getQualifiedName();
         if ("".equals(qualifiedName)) {
             return "您尚未定位转换对象 Y y，例如把鼠标定位到对象 Y 或者 y 上";
         }
@@ -56,21 +64,21 @@ public class ConvertSettingSupport {
     }
 
     protected String[] getTableTitle() {
-        return new String[]{"", setObjConfigDO.getClazzName(), "".equals(getObjConfigDO.getClazzName()) ? "Null" : getObjConfigDO.getClazzName()};
+        return new String[]{"", setObjConfigVO.getClazzName(), "".equals(getObjConfigVO.getClazzName()) ? "Null" : getObjConfigVO.getClazzName()};
     }
 
     protected Object[][] getTableData() {
-        List<String> setMtdList = setObjConfigDO.getParamList();
+        List<String> setMtdList = setObjConfigVO.getParamList();
         Object[][] data = new Object[setMtdList.size()][3];
         for (int i = 0; i < setMtdList.size(); i++) {
             data[i][0] = Boolean.FALSE;
             // set info
             String param = setMtdList.get(i);
-            data[i][1] = setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param);
+            data[i][1] = setObjConfigVO.getClazzParamName() + "." + setObjConfigVO.getParamMtdMap().get(param);
             // get info
-            String getStr = getObjConfigDO.getParamMtdMap().get(param);
+            String getStr = getObjConfigVO.getParamMtdMap().get(param);
             if (null == getStr) continue;
-            data[i][2] = getObjConfigDO.getClazzParam() + "." + getObjConfigDO.getParamMtdMap().get(param);
+            data[i][2] = getObjConfigVO.getClazzParam() + "." + getObjConfigVO.getParamMtdMap().get(param);
         }
         return data;
     }
@@ -79,7 +87,7 @@ public class ConvertSettingSupport {
 
         Application application = ApplicationManager.getApplication();
         // 获取空格位置长度
-        int distance = Utils.getWordStartOffset(generateContext.getEditorText(), generateContext.getOffset()) - generateContext.getStartOffset() - setObjConfigDO.getRepair();
+        int distance = Utils.getWordStartOffset(projectConfigVO.getEditorText(), projectConfigVO.getOffset()) - projectConfigVO.getStartOffset() - setObjConfigVO.getRepair();
 
         application.runWriteAction(() -> {
             StringBuilder blankSpace = new StringBuilder();
@@ -87,10 +95,10 @@ public class ConvertSettingSupport {
                 blankSpace.append(" ");
             }
 
-            int lineNumberCurrent = generateContext.getDocument().getLineNumber(generateContext.getOffset()) + 1;
+            int lineNumberCurrent = projectConfigVO.getDocument().getLineNumber(projectConfigVO.getOffset()) + 1;
 
             // 判断是否使用了 Lombok 标签的 Builder 且开启了使用 Lombok Builder
-            if (setObjConfigDO.isLombokBuilder() && state.isUsedLombokBuilder()) {
+            if (setObjConfigVO.isLombokBuilder() && state.isUsedLombokBuilder()) {
                 /*
                  * 判断是使用了 Lombok Builder 模式
                  * UserDTO userDTO = UserDTO.builder()
@@ -100,33 +108,35 @@ public class ConvertSettingSupport {
                  *              .build();
                  */
                 int finalLineNumberCurrent = lineNumberCurrent;
-                WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                    String clazzName = setObjConfigDO.getClazzName();
-                    String clazzParam = setObjConfigDO.getClazzParamName();
-                    int lineEndOffset = generateContext.getDocument().getLineEndOffset(finalLineNumberCurrent - 1);
-                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1);
-                    generateContext.getDocument().deleteString(lineStartOffset, lineEndOffset);
-                    generateContext.getDocument().insertString(generateContext.getDocument().getLineStartOffset(finalLineNumberCurrent - 1), blankSpace + clazzName + " " + clazzParam + " = " + setObjConfigDO.getClazzName() + ".builder()");
+                WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                    String clazzName = setObjConfigVO.getClazzName();
+                    String clazzParam = setObjConfigVO.getClazzParamName();
+                    int lineEndOffset = projectConfigVO.getDocument().getLineEndOffset(finalLineNumberCurrent - 1);
+                    int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(finalLineNumberCurrent - 1);
+
+                    projectConfigVO.getDocument().deleteString(lineStartOffset, lineEndOffset);
+                    projectConfigVO.getDocument().insertString(projectConfigVO.getDocument().getLineStartOffset(finalLineNumberCurrent - 1), blankSpace + clazzName + " " + clazzParam + " = " + setObjConfigVO.getClazzName() + ".builder()");
                 });
 
                 // setNullRadioButton -> 全部清空，则默认生成空转换
                 if ("setNullRadioButton".equals(state.getSelectRadio())) {
-                    List<String> setMtdList = setObjConfigDO.getParamList();
+                    List<String> setMtdList = setObjConfigVO.getParamList();
                     for (String param : setMtdList) {
-                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
-                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigDO.getParamNameMap().get(param) + "()";
-                            generateContext.getDocument().insertString(lineStartOffset, builderMethod + "\n");
-                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                        int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent++);
+                        WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigVO.getParamNameMap().get(param) + "()";
+
+                            projectConfigVO.getDocument().insertString(lineStartOffset, builderMethod + "\n");
+                            projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                         });
                     }
 
-                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent);
-                    WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
-                        generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                        generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                    int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent);
+                    WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                        projectConfigVO.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
+                        projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                        projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                     });
                 } else {
                     // selectAllRadioButton、selectExistRadioButton -> 按照选择进行转换插入
@@ -135,38 +145,38 @@ public class ConvertSettingSupport {
                         boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
                         if (!isSelected) continue;
 
-                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                        int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent++);
                         Object setVal = convertTable.getValueAt(idx, 1);
                         Object getVal = convertTable.getValueAt(idx, 2);
 
-                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
+                        WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
                             String setValParam = setVal.toString().substring(setVal.toString().indexOf("set") + 3).toLowerCase();
-                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigDO.getParamNameMap().get(setValParam) + "(" + (null == getVal ? "" : getVal + "()") + ")";
+                            String builderMethod = blankSpace + blankSpace.toString() + "." + setObjConfigVO.getParamNameMap().get(setValParam) + "(" + (null == getVal ? "" : getVal + "()") + ")";
 
-                            generateContext.getDocument().insertString(lineStartOffset, builderMethod + "\n");
-                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                            projectConfigVO.getDocument().insertString(lineStartOffset, builderMethod + "\n");
+                            projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                         });
                     }
                 }
 
-                int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent);
-                WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                    generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
-                    generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                    generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent);
+                WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                    projectConfigVO.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + ".build();\n");
+                    projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                    projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                 });
             } else {
                 // setNullRadioButton -> 全部清空，则默认生成空转换
                 if ("setNullRadioButton".equals(state.getSelectRadio())) {
-                    List<String> setMtdList = setObjConfigDO.getParamList();
+                    List<String> setMtdList = setObjConfigVO.getParamList();
                     for (String param : setMtdList) {
-                        int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                        int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent++);
 
-                        WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                            generateContext.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + setObjConfigDO.getClazzParamName() + "." + setObjConfigDO.getParamMtdMap().get(param) + "();\n");
-                            generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                            generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                        WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                            projectConfigVO.getDocument().insertString(lineStartOffset, blankSpace + blankSpace.toString() + setObjConfigVO.getClazzParamName() + "." + setObjConfigVO.getParamMtdMap().get(param) + "();\n");
+                            projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                            projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                         });
 
                     }
@@ -179,14 +189,14 @@ public class ConvertSettingSupport {
                     boolean isSelected = (boolean) convertTable.getValueAt(idx, 0);
                     if (!isSelected) continue;
 
-                    int lineStartOffset = generateContext.getDocument().getLineStartOffset(lineNumberCurrent++);
+                    int lineStartOffset = projectConfigVO.getDocument().getLineStartOffset(lineNumberCurrent++);
                     Object setVal = convertTable.getValueAt(idx, 1);
                     Object getVal = convertTable.getValueAt(idx, 2);
 
-                    WriteCommandAction.runWriteCommandAction(generateContext.getProject(), () -> {
-                        generateContext.getDocument().insertString(lineStartOffset, blankSpace + setVal.toString() + "(" + (null == getVal ? "" : getVal + "()") + ");\n");
-                        generateContext.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
-                        generateContext.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+                    WriteCommandAction.runWriteCommandAction(projectConfigVO.getProject(), () -> {
+                        projectConfigVO.getDocument().insertString(lineStartOffset, blankSpace + setVal.toString() + "(" + (null == getVal ? "" : getVal + "()") + ");\n");
+                        projectConfigVO.getEditor().getCaretModel().moveToOffset(lineStartOffset + 2);
+                        projectConfigVO.getEditor().getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                     });
                 }
             }
