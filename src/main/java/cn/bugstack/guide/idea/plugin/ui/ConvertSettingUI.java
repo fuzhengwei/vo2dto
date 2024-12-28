@@ -1,17 +1,10 @@
 package cn.bugstack.guide.idea.plugin.ui;
 
-import cn.bugstack.guide.idea.plugin.domain.model.GenerateContext;
-import cn.bugstack.guide.idea.plugin.domain.model.GetObjConfigDO;
-import cn.bugstack.guide.idea.plugin.domain.model.SetObjConfigDO;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.factory.DefaultGenerateStrategyFactory;
-import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
+import cn.bugstack.guide.idea.plugin.domain.service.factory.DefaultGenerateStrategyFactory;
+import cn.bugstack.guide.idea.plugin.types.DataSetting;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.TableSpeedSearch;
-import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.table.JBTable;
-import com.intellij.util.containers.Convertor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 

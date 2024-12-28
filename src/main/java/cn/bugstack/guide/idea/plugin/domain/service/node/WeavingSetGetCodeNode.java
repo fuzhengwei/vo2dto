@@ -1,9 +1,9 @@
-package cn.bugstack.guide.idea.plugin.domain.service.generate.node;
+package cn.bugstack.guide.idea.plugin.domain.service.node;
 
-import cn.bugstack.guide.idea.plugin.domain.service.generate.AbstractGenerateStrategySupport;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.StrategyHandler;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.factory.DefaultGenerateStrategyFactory;
-import cn.bugstack.guide.idea.plugin.infrastructure.Utils;
+import cn.bugstack.guide.idea.plugin.domain.service.AbstractGenerateStrategySupport;
+import cn.bugstack.guide.idea.plugin.domain.service.StrategyHandler;
+import cn.bugstack.guide.idea.plugin.domain.service.factory.DefaultGenerateStrategyFactory;
+import cn.bugstack.guide.idea.plugin.types.Utils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;

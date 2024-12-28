@@ -1,9 +1,9 @@
-package cn.bugstack.guide.idea.plugin.domain.service.generate.node;
+package cn.bugstack.guide.idea.plugin.domain.service.node;
 
 import cn.bugstack.guide.idea.plugin.domain.model.MethodVO;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.AbstractGenerateStrategySupport;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.StrategyHandler;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.factory.DefaultGenerateStrategyFactory;
+import cn.bugstack.guide.idea.plugin.domain.service.AbstractGenerateStrategySupport;
+import cn.bugstack.guide.idea.plugin.domain.service.StrategyHandler;
+import cn.bugstack.guide.idea.plugin.domain.service.factory.DefaultGenerateStrategyFactory;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
@@ -74,6 +74,7 @@ public class SetObjConfigNode extends AbstractGenerateStrategySupport {
 
         // 鼠标定位到属性
         PsiLocalVariable psiLocalVariable = null;
+
         if (psiElement instanceof PsiLocalVariable) {
             psiLocalVariable = (PsiLocalVariable) psiElement;
         } else if (psiElement == null) {
@@ -101,7 +102,7 @@ public class SetObjConfigNode extends AbstractGenerateStrategySupport {
                 if (startElementAt.getText().equals(".")) {
                     startElementAt = psiFile.findElementAt(++startOffset);
                     // 排除点后面的空格
-                    while (startElementAt instanceof PsiWhiteSpace){
+                    while (startElementAt instanceof PsiWhiteSpace) {
                         startElementAt = psiFile.findElementAt(++startOffset);
                     }
                     clazzFullName += "." + startElementAt.getText();

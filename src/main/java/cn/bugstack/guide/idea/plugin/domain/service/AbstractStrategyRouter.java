@@ -1,4 +1,4 @@
-package cn.bugstack.guide.idea.plugin.domain.service.generate;
+package cn.bugstack.guide.idea.plugin.domain.service;
 
 /**
  * @author Fuzhengwei bugstack.cn @小傅哥

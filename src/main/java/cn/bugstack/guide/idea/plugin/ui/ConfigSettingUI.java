@@ -1,6 +1,6 @@
 package cn.bugstack.guide.idea.plugin.ui;
 
-import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
+import cn.bugstack.guide.idea.plugin.types.DataSetting;
 import com.intellij.openapi.project.Project;
 
 import javax.swing.*;

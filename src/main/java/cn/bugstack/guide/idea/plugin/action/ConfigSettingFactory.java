@@ -1,6 +1,6 @@
 package cn.bugstack.guide.idea.plugin.action;
 
-import cn.bugstack.guide.idea.plugin.infrastructure.DataSetting;
+import cn.bugstack.guide.idea.plugin.types.DataSetting;
 import cn.bugstack.guide.idea.plugin.ui.ConfigSettingUI;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;

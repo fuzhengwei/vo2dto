@@ -1,4 +1,4 @@
-package cn.bugstack.guide.idea.plugin.infrastructure;
+package cn.bugstack.guide.idea.plugin.types;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

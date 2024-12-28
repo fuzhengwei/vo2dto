@@ -133,7 +133,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <projectService serviceImplementation="cn.bugstack.guide.idea.plugin.infrastructure.DataSetting"/>
+        <projectService serviceImplementation="cn.bugstack.guide.idea.plugin.types.DataSetting"/>
 
         <!-- 配置 File -> Settings -> Tools -->
         <projectConfigurable groupId="tools" displayName="Vo2Dto Config" id="vo2dto"

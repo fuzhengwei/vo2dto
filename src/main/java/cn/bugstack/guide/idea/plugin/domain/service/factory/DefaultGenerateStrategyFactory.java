@@ -1,7 +1,7 @@
-package cn.bugstack.guide.idea.plugin.domain.service.generate.factory;
+package cn.bugstack.guide.idea.plugin.domain.service.factory;
 
-import cn.bugstack.guide.idea.plugin.domain.service.generate.StrategyHandler;
-import cn.bugstack.guide.idea.plugin.domain.service.generate.node.*;
+import cn.bugstack.guide.idea.plugin.domain.service.StrategyHandler;
+import cn.bugstack.guide.idea.plugin.domain.service.node.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
