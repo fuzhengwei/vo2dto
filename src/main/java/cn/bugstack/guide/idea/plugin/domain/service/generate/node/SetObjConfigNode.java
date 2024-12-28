@@ -43,11 +43,31 @@ public class SetObjConfigNode extends AbstractGenerateStrategySupport {
             Editor editor = projectConfigVO.getEditor();
             int offsetStep = projectConfigVO.getOffset() + 1;
             PsiElement elementAt = psiFile.findElementAt(editor.getCaretModel().getOffset());
-            while (null == elementAt
-                    || elementAt.getText().equals(psiClass.getName())
-                    || elementAt instanceof PsiWhiteSpace) {
+
+            clazzFullName = elementAt.getText();
+
+            // 做循环补充，一直找到空格位置
+            while (!(elementAt instanceof PsiWhiteSpace)) {
+                elementAt = psiFile.findElementAt(--offsetStep);
+            }
+
+            elementAt = psiFile.findElementAt(++offsetStep);
+
+            // 一直循环到第一个空白区
+            while (!(elementAt instanceof PsiWhiteSpace)) {
+                if (elementAt.getText().equals(".")) {
+                    elementAt = psiFile.findElementAt(++offsetStep);
+                    clazzFullName += "." + elementAt.getText();
+                }
+
                 elementAt = psiFile.findElementAt(++offsetStep);
             }
+
+            // 从空白区开始循环找内容
+            while (null == elementAt || elementAt instanceof PsiWhiteSpace) {
+                elementAt = psiFile.findElementAt(++offsetStep);
+            }
+
             // 最终拿到属性名称
             clazzParamName = elementAt.getText();
         }
