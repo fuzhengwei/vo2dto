@@ -25,20 +25,23 @@
       </ul>
 
       <br/>
-      <br/>
       <b>中文介绍</b>
       <br/>
       一款用于帮助使用 IntelliJ IDEA 编写代码的研发人员，快速生成两个对象转换过程中所需要大量的 `x.set(y.get)` 代码块的插件工具。
       <br/>
       <ul>
-          <li>1. 先复制对象，例如：A a，然后将光标放在要编织的对象上，例如：B b = new B()</li>
-          <li>2. 鼠标定位到 B b 以后，Mac「Ctrl + N」 Windows「alt+ insert」 选择 Vo2Dto 如界面操作按需选择</li>
+          <li>1. 先复制对象，例如：A a，全选复制。然后将光标放在要编织的对象上，例如：B b; 光标放到 b; 中间</li>
+          <li>2. 鼠标定位到 B b; 以后，Mac「Ctrl + N」 Windows「alt+ insert」 选择 Vo2Dto 如界面操作按需选择</li>
           <li>3. 如果你在对象上使用了 Lombok Builder 注解，那么可以生成 Builder 模式对象</li>
       </ul>
 
     ]]></description>
 
     <change-notes><![CDATA[
+       <h3>V2.5.4</h3>
+      <ul>
+          <li>支持类的内部类</li>
+      </ul>
       <h3>V2.5.4</h3>
       <ul>
           <li>fix Getter、Setter 注解检测</li>
