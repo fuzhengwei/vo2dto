@@ -1,10 +1,6 @@
 package cn.bugstack.guide.idea.plugin.domain.service;
 
 import cn.bugstack.guide.idea.plugin.domain.model.MethodVO;
-import cn.bugstack.guide.idea.plugin.domain.service.node.ConvertSettingNode;
-import cn.bugstack.guide.idea.plugin.domain.service.node.GetObjConfigNode;
-import cn.bugstack.guide.idea.plugin.domain.service.node.SetObjConfigNode;
-import cn.bugstack.guide.idea.plugin.domain.service.node.WeavingSetGetCodeNode;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
 
@@ -15,14 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class AbstractGenerateStrategySupport extends AbstractStrategyRouter<AnActionEvent, cn.bugstack.guide.idea.plugin.domain.service.factory.DefaultGenerateStrategyFactory.DynamicContext, Boolean> {
-
-    protected SetObjConfigNode setObjConfigNode;
-
-    protected GetObjConfigNode getObjConfigNode;
-
-    protected WeavingSetGetCodeNode weavingSetGetCodeNode;
-
-    protected ConvertSettingNode convertSettingNode;
 
     protected final String setRegex = "set(\\w+)";
     protected final String getRegex = "get(\\w+)";
